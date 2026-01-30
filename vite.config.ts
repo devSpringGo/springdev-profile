@@ -11,6 +11,15 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       base: '/',
+      build: {
+        rollupOptions: {
+          output: {
+            entryFileNames: 'assets/[name].mjs',
+            chunkFileNames: 'assets/[name].mjs',
+            assetFileNames: 'assets/[name].[ext]'
+          }
+        }
+      },
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
