@@ -17,31 +17,32 @@ Nhiệm vụ của bạn:
 - Luôn trả lời bằng tiếng Việt trừ khi người dùng hỏi bằng tiếng Anh.
 `;
 
-export const sendMessageToGemini = async (message: string, history: { role: string; parts: { text: string }[] }[]) => {
-  try {
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-      throw new Error("API Key chưa được cấu hình.");
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
-    
-    // Using gemini-3-flash-preview for fast, responsive chat interactions
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: [
-        ...history.map(h => ({ role: h.role, parts: h.parts })), // Past context
-        { role: 'user', parts: [{ text: message }] } // Current message
-      ],
-      config: {
-        systemInstruction: RESUME_CONTEXT,
-        thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster chat response
+  export const sendMessageToGemini = async (message: string, history: { role: string; parts: { text: string }[] }[]) => {
+    try {
+      //const apiKey = process.env.API_KEY;
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error("API Key chưa được cấu hình.");
       }
-    });
 
-    return response.text;
-  } catch (error) {
-    console.error("Gemini API Error:", error);
-    throw error;
-  }
-};
+      const ai = new GoogleGenAI({ apiKey });
+      
+      // Using gemini-3-flash-preview for fast, responsive chat interactions
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: [
+          ...history.map(h => ({ role: h.role, parts: h.parts })), // Past context
+          { role: 'user', parts: [{ text: message }] } // Current message
+        ],
+        config: {
+          systemInstruction: RESUME_CONTEXT,
+          thinkingConfig: { thinkingBudget: 0 } // Disable thinking for faster chat response
+        }
+      });
+
+      return response.text;
+    } catch (error) {
+      console.error("Gemini API Error:", error);
+      throw error;
+    }
+  };
