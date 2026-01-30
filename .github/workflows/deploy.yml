@@ -1,7 +1,10 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [ Main ]  # Thay 'main' bằng branch chính của bạn nếu khác
+    branches: [ Main ]  # Giữ nguyên nếu branch là Main
+permissions:
+  contents: write
+  pages: write
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
