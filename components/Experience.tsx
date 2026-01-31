@@ -130,28 +130,17 @@ type TimelineItem = {
 
 const timeline: TimelineItem[] = [
   {
-    id: 0,
-    type: 'education',
-    school: 'Đại học Công nghệ TP.HCM (HUTECH)',
-    degree: 'Cử nhân Công nghệ Thông tin',
-    period: '2019 - 2023',
-    description: [
-      'Chuyên ngành Công nghệ Phần mềm.',
-      'Nền tảng về .NET, C#, Java, PHP, Node.js, SQL Server, MongoDB, Firebase, Mobile Developer Java, Flutter và Phân tích thiết kế hệ thống.',
-      'Tham gia các đồ án học thuật liên quan đến phát triển phần mềm.'
-    ]
-  },
-  {
-    id: 1,
+    id: 3,
     type: 'experience',
-    company: 'Fujinet Systems',
-    role: 'Intern .NET Developer & Probation .NET Developer',
-    period: '04/2023 - 10/2023',
+    company: 'Công ty Bánh Đồng Tiến',
+    role: 'Full Stack Developer',
+    period: '09/2025 - Hiện tại',
     description: [
-      'Tham gia chương trình tuyển dụng tại Ngày hội việc làm OpenDay 2023 do HUTECH tổ chức.',
-      'Phát triển ứng dụng WinForms với Visual Basic và cơ sở dữ liệu Oracle.',
-      'Tham gia dự án WinForms cho khách hàng Nhật Bản sử dụng C#, SQL Server.',
-      'Xây dựng và tối ưu Stored Procedure, Function.'
+      'Chịu trách nhiệm end-to-end cho các phần mềm và module nội bộ của công ty.',
+      'Thiết kế giao diện người dùng (UI) và phát triển backend cho hệ thống.',
+      'Phân tích yêu cầu, đề xuất giải pháp kỹ thuật và triển khai hoàn chỉnh sản phẩm.',
+      'Xây dựng và tối ưu cơ sở dữ liệu, cải thiện hiệu năng hệ thống.',
+      'Phối hợp với các bộ phận liên quan để kiểm thử và cải tiến chức năng.'
     ]
   },
   {
@@ -170,17 +159,28 @@ const timeline: TimelineItem[] = [
     ]
   },
   {
-    id: 3,
+    id: 1,
     type: 'experience',
-    company: 'Công ty Bánh Đồng Tiến',
-    role: 'Full Stack Developer',
-    period: '09/2025 - Hiện tại',
+    company: 'Fujinet Systems',
+    role: 'Intern .NET Developer & Probation .NET Developer',
+    period: '04/2023 - 10/2023',
     description: [
-      'Chịu trách nhiệm end-to-end cho các phần mềm và module nội bộ của công ty.',
-      'Thiết kế giao diện người dùng (UI) và phát triển backend cho hệ thống.',
-      'Phân tích yêu cầu, đề xuất giải pháp kỹ thuật và triển khai hoàn chỉnh sản phẩm.',
-      'Xây dựng và tối ưu cơ sở dữ liệu, cải thiện hiệu năng hệ thống.',
-      'Phối hợp với các bộ phận liên quan để kiểm thử và cải tiến chức năng.'
+      'Tham gia chương trình tuyển dụng tại Ngày hội việc làm OpenDay 2023 do HUTECH tổ chức.',
+      'Phát triển ứng dụng WinForms với Visual Basic và cơ sở dữ liệu Oracle.',
+      'Tham gia dự án WinForms cho khách hàng Nhật Bản sử dụng C#, SQL Server.',
+      'Xây dựng và tối ưu Stored Procedure, Function.'
+    ]
+  },
+  {
+    id: 0,
+    type: 'education',
+    school: 'Đại học Công nghệ TP.HCM (HUTECH)',
+    degree: 'Cử nhân Công nghệ Thông tin',
+    period: '2019 - 2023',
+    description: [
+      'Chuyên ngành Công nghệ Phần mềm.',
+      'Nền tảng về .NET, C#, Java, PHP, Node.js, SQL Server, MongoDB, Firebase, Mobile Developer Java, Flutter và Phân tích thiết kế hệ thống.',
+      'Tham gia các đồ án học thuật liên quan đến phát triển phần mềm.'
     ]
   }
 ];
@@ -204,14 +204,14 @@ const Experience: React.FC = () => {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Học Vấn & Kinh Nghiệm
+            Học vấn & Kinh nghiệm
           </h2>
           <div className="w-20 h-1 bg-secondary mx-auto rounded-full" />
         </motion.div>
 
         <div className="relative">
           {/* Vertical Line */}
-          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-slate-700 rounded-full" />
+          <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 h-full w-1 bg-slate-700 rounded-full" />
 
           <div className="space-y-12">
             {timeline.map((item, index) => {
@@ -220,9 +220,9 @@ const Experience: React.FC = () => {
               return (
                 <motion.div
                   key={item.id}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? 60 : -60 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
+                  viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                   className={`flex flex-col md:flex-row ${
                     index % 2 === 0 ? 'md:flex-row-reverse' : ''
@@ -230,7 +230,7 @@ const Experience: React.FC = () => {
                 >
                   {/* Dot */}
                   <div
-                    className={`absolute left-[-5px] md:left-1/2 transform md:-translate-x-1/2
+                    className={`absolute left-[-6px] md:left-1/2 md:-translate-x-1/2
                     w-4 h-4 rounded-full border-4 z-10
                     ${
                       isEducation
@@ -240,15 +240,11 @@ const Experience: React.FC = () => {
                   />
 
                   {/* Content */}
-                  <div className="w-full md:w-1/2 pl-8 md:pl-0 md:px-8">
-                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg hover:border-secondary/50 transition">
+                  <div className="w-full md:w-1/2 pl-8 md:px-8">
+                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
                       {/* Header */}
                       <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
-                        {isEducation ? (
-                          <GraduationCap size={18} />
-                        ) : (
-                          <Briefcase size={18} />
-                        )}
+                        {isEducation ? <GraduationCap size={18} /> : <Briefcase size={18} />}
                         {isEducation ? item.degree : item.role}
                       </div>
 
@@ -261,7 +257,8 @@ const Experience: React.FC = () => {
                         {item.period}
                       </div>
 
-                      <ul className="text-gray-300 text-sm space-y-2 list-disc list-inside">
+                      {/* 👇 CĂN ĐỀU NỘI DUNG */}
+                      <ul className="text-gray-300 text-sm space-y-2 list-disc list-inside text-justify">
                         {item.description.map((desc, idx) => (
                           <li key={idx} className="leading-relaxed">
                             {desc}
