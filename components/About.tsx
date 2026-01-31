@@ -101,16 +101,16 @@ const About: React.FC = () => {
                  <span className="text-sm text-gray-400">Năm kinh nghiệm</span>
               </div>
               <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
-                 <span className="block text-3xl font-bold text-secondary">15+</span>
+                 <span className="block text-3xl font-bold text-secondary">5</span>
                  <span className="text-sm text-gray-400">Dự án hoàn thành</span>
               </div>
               <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
-                 <span className="block text-3xl font-bold text-green-500">10+</span>
+                 <span className="block text-3xl font-bold text-green-500">3+</span>
                  <span className="text-sm text-gray-400">Công nghệ sử dụng</span>
               </div>
               <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
                  <span className="block text-3xl font-bold text-orange-500">100%</span>
-                 <span className="text-sm text-gray-400">Hài lòng từ KH</span>
+                 <span className="text-sm text-gray-400">Hoàn thành nhiệm vụ</span>
               </div>
            </div>
         </motion.div>

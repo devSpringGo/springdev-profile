@@ -83,7 +83,7 @@ const AIChat: React.FC = () => {
               <Bot size={20} className="text-primary" />
             </div>
             <div>
-              <h3 className="font-bold text-white text-sm">Trợ lý Portfolio</h3>
+              <h3 className="font-bold text-white text-sm">Trợ lý SpringGo</h3>
               <p className="text-xs text-green-400 flex items-center gap-1">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span> Online
               </p>
@@ -135,9 +135,9 @@ const AIChat: React.FC = () => {
                 <Send size={18} />
               </button>
             </div>
-            <p className="text-[10px] text-gray-500 text-center mt-2">
+            {/* <p className="text-[10px] text-gray-500 text-center mt-2">
               Powered by Gemini AI. Bot có thể mắc lỗi.
-            </p>
+            </p> */}
           </div>
         </div>
       )}

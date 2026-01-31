@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                <Code2 className="h-8 w-8 text-primary group-hover:rotate-12 transition-transform duration-300" />
                <div className="absolute inset-0 bg-primary/50 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </div>
-            <span className="ml-2 text-xl font-bold text-white tracking-wider group-hover:text-primary transition-colors duration-300">DEV<span className="text-primary group-hover:text-white transition-colors duration-300">PROFILE</span></span>
+            <span className="ml-2 text-xl font-bold text-white tracking-wider group-hover:text-primary transition-colors duration-300">DEV<span className="text-primary group-hover:text-white transition-colors duration-300">SPRING</span></span>
           </div>
 
           {/* Desktop Menu */}

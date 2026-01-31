@@ -1,8 +1,8 @@
 import React from 'react';
 
 const techs = [
-  "React", "TypeScript", "Next.js", "Node.js", "TailwindCSS", "PostgreSQL", "GraphQL", 
-  "Docker", "AWS", "Figma", "Firebase", "Redux", "Git", "Framer Motion", "Vite"
+  "C#, VB", ".NET", "Java", "PHP", "Node.JS", "React", "TypeScript", "TailwindCSS", "SQL Server", "MongoDB", 
+  "Source Tree", "Oracle", "Mobile Developer", "Flutter", "Git", "Vite"
 ];
 
 const TechMarquee: React.FC = () => {

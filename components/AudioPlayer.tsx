@@ -6,10 +6,10 @@ const AudioPlayer: React.FC = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Use a royalty-free ambient track
-  const AUDIO_URL = "music.mp3"; 
+  const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/05/18/audio_d9dc56e280.mp3"; 
 
   useEffect(() => {
-    audioRef.current = new Audio("music.mp3");
+    audioRef.current = new Audio(AUDIO_URL);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.3; // Low volume for background
     

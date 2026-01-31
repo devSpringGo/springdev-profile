@@ -7,9 +7,9 @@ const Footer: React.FC = () => {
         <p className="text-gray-500 text-sm">
           © {new Date().getFullYear()} Nguyễn Xuân Tiến. All rights reserved.
         </p>
-        <p className="text-gray-600 text-xs mt-2">
+        {/* <p className="text-gray-600 text-xs mt-2">
           Designed with ❤️ AI assistance.
-        </p>
+        </p> */}
       </div>
     </footer>
   );

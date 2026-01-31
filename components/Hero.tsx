@@ -110,12 +110,12 @@ const Hero: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.6 }}
             className="mt-10 flex items-center justify-center lg:justify-start gap-6"
           >
-            <a href="#" className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200">
+            {/* <a href="#" className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200">
               <Github size={24} />
             </a>
             <a href="#" className="text-gray-400 hover:text-white transition-colors hover:scale-110 transform duration-200">
               <Linkedin size={24} />
-            </a>
+            </a> */}
           </motion.div>
         </div>
 
@@ -129,18 +129,22 @@ const Hero: React.FC = () => {
             {/* Abstract Tech Illustration placeholder */}
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/30 rounded-full animate-pulse blur-3xl"></div>
             <img 
-              src="https://picsum.photos/600/600?grayscale" 
+              src="https://scontent.fdad1-3.fna.fbcdn.net/v/t39.30808-6/274120203_3100112090265940_3954141515582842385_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEmpFp6KZ_UQwYWVvSJ9yC0RuV0SrKbiOlG5XRKspuI6Sv63UnJ3S95vt7lp5z7tpOkEnOIOV1qvhUHJQdUDkf1&_nc_ohc=WhyP-MBKdS0Q7kNvwE3tyPH&_nc_oc=AdmhEkVofcvJRqh33oM8mlAl5NhxK_I3lpwxpXkgnfFPy8kAI3kowOIfinAn5b7CbS8&_nc_zt=23&_nc_ht=scontent.fdad1-3.fna&_nc_gid=Ma7VPsj4Oc8zwIh6Tmg9uw&oh=00_Afti_O2GiWcustvOuR54OBKBNwak0N0nN2eaQ9RNrhn_UQ&oe=69832B85" 
               alt="Developer Portrait" 
               className="relative w-full h-full object-cover rounded-2xl border-2 border-gray-700/50 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500 z-10"
             />
              {/* Decorative Elements */}
-             <motion.div 
-               animate={{ y: [0, -10, 0] }}
-               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-               className="absolute -top-5 -right-5 w-24 h-24 bg-dark border border-gray-700 rounded-lg p-4 shadow-xl z-20 flex items-center justify-center"
-             >
-                <span className="text-4xl">⚛️</span>
-             </motion.div>
+             <motion.div
+                animate={{ y: [0, -12, 0], opacity: [0.9, 1, 0.9] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-6 -right-6 w-28 h-20 
+                          bg-gray-800/80 backdrop-blur 
+                          border border-gray-600 rounded-full 
+                          shadow-xl z-20 flex items-center justify-center"
+              >
+                <span className="text-3xl">💭</span>
+              </motion.div>
+
              <motion.div 
                animate={{ y: [0, 10, 0] }}
                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}

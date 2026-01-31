@@ -32,7 +32,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium">Email</h4>
-                  <p className="text-gray-400">dev.nguyen@example.com</p>
+                  <p className="text-gray-400">contact@springgo.xyz</p>
                 </div>
               </div>
               
@@ -42,7 +42,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium">Điện thoại</h4>
-                  <p className="text-gray-400">+84 901 234 567</p>
+                  <p className="text-gray-400">034.609.2267</p>
                 </div>
               </div>
 
@@ -52,7 +52,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium">Địa chỉ</h4>
-                  <p className="text-gray-400">TP. Hồ Chí Minh, Việt Nam</p>
+                  <p className="text-gray-400">TP. Đà Nẵng, Việt Nam</p>
                 </div>
               </div>
             </div>
@@ -64,11 +64,11 @@ const Contact: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">Họ tên</label>
-                  <input type="text" id="name" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="Nguyễn Xuân Tiến" />
+                  <input type="text" id="name" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="nhập họ tên của bạn" />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                  <input type="email" id="email" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="xuantien@gmail.com" />
+                  <input type="email" id="email" className="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-3 text-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" placeholder="nhập email của bạn" />
                 </div>
               </div>
               
