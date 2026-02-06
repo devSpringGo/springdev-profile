@@ -270,7 +270,7 @@ const Hero: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/30 rounded-full blur-3xl animate-pulse" />
 
             <img
-              src="https://scontent.fdad1-3.fna.fbcdn.net/v/t39.30808-6/274120203_3100112090265940_3954141515582842385_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEmpFp6KZ_UQwYWVvSJ9yC0RuV0SrKbiOlG5XRKspuI6Sv63UnJ3S95vt7lp5z7tpOkEnOIOV1qvhUHJQdUDkf1&_nc_ohc=WhyP-MBKdS0Q7kNvwE3tyPH&_nc_oc=AdmhEkVofcvJRqh33oM8mlAl5NhxK_I3lpwxpXkgnfFPy8kAI3kowOIfinAn5b7CbS8&_nc_zt=23&_nc_ht=scontent.fdad1-3.fna&_nc_gid=Ma7VPsj4Oc8zwIh6Tmg9uw&oh=00_Afti_O2GiWcustvOuR54OBKBNwak0N0nN2eaQ9RNrhn_UQ&oe=69832B85" 
+              src="https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-6/624905967_4251737148436756_7500851371227167851_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=QbYC9JeFo3wQ7kNvwGwmccR&_nc_oc=AdkRROZboavhJoMMgCDvq8v92CTVGOUSF1AZvHCNrv1AStrjrb3WvSYV-cI1Jv91TSs&_nc_zt=23&_nc_ht=scontent.fhan2-5.fna&_nc_gid=iuar5ybGnO75mdryJiKQ1g&oh=00_Afs_75W-tgtaxZSQB7HgDjUeEo9KXERWAYbIjx7kDr7Q9Q&oe=698BAE63" 
               alt="Developer Portrait"
               className="relative w-full h-full object-cover rounded-2xl border-2 border-gray-700/50 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500 z-10"
             />
