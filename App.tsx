@@ -6,6 +6,7 @@ import Experience from './components/Experience';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import LuckyMoney from './components/LuckyMoney'; // mới
 import AIChat from './components/AIChat';
 import ParticleBackground from './components/ParticleBackground';
 import AudioPlayer from './components/AudioPlayer';
@@ -22,6 +23,8 @@ function App() {
       <Navbar />
       <main className="relative z-10">
         <Hero />
+                <LuckyMoney />   {/* mới, đặt sớm để người dùng thấy mini‑game */}
+
         <About />
         <Experience />
         <Projects />

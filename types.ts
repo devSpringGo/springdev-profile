@@ -27,5 +27,6 @@ export enum SectionId {
   ABOUT = 'about',
   EXPERIENCE = 'experience',
   PROJECTS = 'projects',
+    LUCKY = 'lucky',          // mới
   CONTACT = 'contact'
 }
