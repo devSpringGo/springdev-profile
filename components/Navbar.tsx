@@ -71,9 +71,9 @@ const Navbar: React.FC = () => {
             ))}
             
             {/* Command Hint */}
-            <div className="hidden lg:flex items-center ml-4 px-2 py-1 rounded bg-slate-800 border border-slate-700 text-xs text-gray-400">
+            {/* <div className="hidden lg:flex items-center ml-4 px-2 py-1 rounded bg-slate-800 border border-slate-700 text-xs text-gray-400">
                 <span className="mr-1">⌘</span>K
-            </div>
+            </div> */}
           </div>
 
           {/* Mobile Menu Button */}

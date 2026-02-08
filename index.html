@@ -10,13 +10,19 @@
       tailwind.config = {
         theme: {
           extend: {
+            container: {
+              center: true,
+              padding: '1rem',
+            },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
             },
             colors: {
-              primary: '#6366f1', // Indigo 500
-              secondary: '#a855f7', // Purple 500
-              dark: '#0f172a', // Slate 900
+              primary: '#4f46e5', // Slightly deeper Indigo
+              secondary: '#8b5cf6', // Softer purple
+              accent: '#06b6d4', // Teal accent
+              muted: '#94a3b8',
+              dark: '#071026', // deeper dark
             },
             animation: {
               'blob': 'blob 7s infinite',
@@ -43,6 +49,47 @@
         background-color: #0f172a;
         color: #e2e8f0;
         cursor: none; /* Hide default cursor for custom one */
+      }
+      :root {
+        --radius: 12px;
+      }
+      html, body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      h1, h2, h3 {
+        letter-spacing: -0.01em;
+        line-height: 1.05;
+      }
+      p { line-height: 1.6; color: #cbd5e1; }
+      /* Button and input base styles to make UI consistent (pure CSS fallback) */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius);
+        font-weight: 600;
+        color: #ffffff;
+        background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
+        box-shadow: 0 10px 25px rgba(79,70,229,0.12);
+        transition: transform 180ms ease, opacity 160ms ease;
+      }
+      .btn-primary:hover { transform: translateY(-3px); }
+      .form-input {
+        width: 100%;
+        background: #0b1220;
+        border: 1px solid #334155;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        color: #e6eef8;
+        outline: none;
+        transition: box-shadow 160ms ease, border-color 160ms ease;
+      }
+      .form-input:focus {
+        box-shadow: 0 6px 18px rgba(79,70,229,0.12);
+        border-color: #6366f1;
       }
       /* Fallback for touch devices */
       @media (hover: none) and (pointer: coarse) {

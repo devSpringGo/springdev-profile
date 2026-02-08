@@ -200,9 +200,9 @@ const Hero: React.FC = () => {
     >
       {/* Background Gradients */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-blob" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary/20 rounded-full blur-[100px] animate-blob animation-delay-2000" />
-        <div className="absolute top-[40%] left-[40%] w-96 h-96 bg-purple-500/20 rounded-full blur-[100px] animate-blob animation-delay-4000" />
+        <div className="absolute top-[-8%] left-[-8%] w-72 h-72 sm:w-80 sm:h-80 bg-primary/18 rounded-full blur-[80px] animate-blob" />
+        <div className="absolute bottom-[-8%] right-[-8%] w-72 h-72 sm:w-80 sm:h-80 bg-secondary/18 rounded-full blur-[80px] animate-blob animation-delay-2000" />
+        <div className="absolute top-[45%] left-[45%] w-60 h-60 sm:w-72 sm:h-72 bg-purple-500/14 rounded-full blur-[80px] animate-blob animation-delay-4000" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse lg:flex-row items-center">
@@ -217,7 +217,7 @@ const Hero: React.FC = () => {
             Có sẵn cho công việc Freelance
           </motion.div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white leading-tight mb-6 h-24 lg:h-auto">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
             Xin chào, tôi là <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               {text}
@@ -261,38 +261,40 @@ const Hero: React.FC = () => {
 
         {/* Right image */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.92 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7 }}
-          className="w-full lg:w-1/2 flex justify-center lg:justify-end"
+          className="w-full lg:w-1/2 flex justify-center lg:justify-end mb-8 lg:mb-0"
         >
-          <div className="relative w-72 h-72 sm:w-96 sm:h-96 lg:w-[500px] lg:h-[500px]">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/30 rounded-full blur-3xl animate-pulse" />
+          <div className="relative w-full max-w-[280px] sm:max-w-[360px] md:max-w-[440px] aspect-square">
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-2xl blur-xl animate-pulse" />
 
             <img
-              src="https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-6/624905967_4251737148436756_7500851371227167851_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=QbYC9JeFo3wQ7kNvwGwmccR&_nc_oc=AdkRROZboavhJoMMgCDvq8v92CTVGOUSF1AZvHCNrv1AStrjrb3WvSYV-cI1Jv91TSs&_nc_zt=23&_nc_ht=scontent.fhan2-5.fna&_nc_gid=iuar5ybGnO75mdryJiKQ1g&oh=00_Afs_75W-tgtaxZSQB7HgDjUeEo9KXERWAYbIjx7kDr7Q9Q&oe=698BAE63" 
+              src="https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-6/624905967_4251737148436756_7500851371227167851_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=QbYC9JeFo3wQ7kNvwGwmccR&_nc_oc=AdkRROZboavhJoMMgCDvq8v92CTVGOUSF1AZvHCNrv1AStrjrb3WvSYV-cI1Jv91TSs&_nc_zt=23&_nc_ht=scontent.fhan2-5.fna&_nc_gid=iuar5ybGnO75mdryJiKQ1g&oh=00_Afs_75W-tgtaxZSQB7HgDjUeEo9KXERWAYbIjx7kDr7Q9Q&oe=698BAE63"
               alt="Developer Portrait"
-              className="relative w-full h-full object-cover rounded-2xl border-2 border-gray-700/50 shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500 z-10"
+              className="relative w-full h-full object-cover rounded-2xl border border-gray-700/40 shadow-md transition-transform duration-400 z-10"
             />
 
-            {/* Floating elements */}
+            {/* Floating elements (smaller, responsive) */}
             <motion.div
-              animate={{ y: [0, -12, 0] }}
+              animate={{ y: [0, -8, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-6 -right-6 w-28 h-20 bg-gray-800/80 backdrop-blur border border-gray-600 rounded-full shadow-xl z-20 flex items-center justify-center"
+              className="absolute -top-3 -right-3 w-16 h-12 bg-gray-800/80 backdrop-blur border border-gray-600 rounded-full shadow-md z-20 flex items-center justify-center"
             >
-              <span className="text-3xl">💭</span>
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1280px-Flag_of_Vietnam.svg.png"
+                alt="Vietnam flag"
+                className="w-6 h-6 inline-block"
+              />
             </motion.div>
 
             <motion.div
-              animate={{ y: [0, 10, 0] }}
+              animate={{ y: [0, 6, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -bottom-5 -left-5 px-6 py-3 bg-dark border border-gray-700 rounded-lg shadow-xl z-20 flex items-center gap-2"
+              className="absolute -bottom-2 -left-2 px-3 py-1 bg-dark border border-gray-700 rounded-md shadow-md z-20 flex items-center gap-2"
             >
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-ping" />
-              <span className="text-sm font-bold text-white">
-                2+ Năm Kinh Nghiệm
-              </span>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
+              <span className="text-xs font-bold text-white">2+ Năm Kinh Nghiệm</span>
             </motion.div>
           </div>
         </motion.div>
