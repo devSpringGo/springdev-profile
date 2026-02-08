@@ -36,8 +36,47 @@ const About: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          className="text-center mb-16 relative"
         >
+          {/* Decoration: Top-left branch */}
+          <div className="absolute -top-12 -left-8 md:-left-4 opacity-70 pointer-events-none hidden sm:block">
+            <svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <g id="peach-blossom-detailed-about">
+                  <circle cx="0" cy="-5" r="3" fill="#f472b6" />
+                  <circle cx="5" cy="-2" r="3" fill="#f472b6" />
+                  <circle cx="3" cy="4" r="3" fill="#f472b6" />
+                  <circle cx="-3" cy="4" r="3" fill="#f472b6" />
+                  <circle cx="-5" cy="-2" r="3" fill="#f472b6" />
+                  <circle cx="0" cy="0" r="1.5" fill="#fef08a" />
+                </g>
+              </defs>
+              <path d="M0 0 Q 70 30, 80 100 T 150 150" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M80 100 Q 100 80, 130 70" stroke="#78350f" strokeWidth="2" strokeLinecap="round" />
+              <use href="#peach-blossom-detailed-about" x="80" y="100" transform="scale(1.4)" />
+              <use href="#peach-blossom-detailed-about" x="150" y="150" transform="scale(1.1)" />
+              <use href="#peach-blossom-detailed-about" x="130" y="70" transform="scale(1)" />
+              <use href="#peach-blossom-detailed-about" x="40" y="25" transform="scale(0.9)" />
+              <circle cx="100" cy="120" r="3.5" fill="#fbcfe8" />
+              <circle cx="160" cy="80" r="2.5" fill="#fbcfe8" />
+            </svg>
+          </div>
+
+          {/* Decoration: Bottom-right branch */}
+          <div className="absolute -bottom-16 -right-8 md:-right-4 opacity-70 pointer-events-none hidden sm:block">
+            <svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M250 200 Q 180 170, 170 100 T 100 50" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
+              <path d="M170 100 Q 150 120, 120 130" stroke="#78350f" strokeWidth="2" strokeLinecap="round" />
+              {/* Re-using the same ID from the first SVG is valid within the same document */}
+              <use href="#peach-blossom-detailed-about" x="170" y="100" transform="scale(1.4)" />
+              <use href="#peach-blossom-detailed-about" x="100" y="50" transform="scale(1.1)" />
+              <use href="#peach-blossom-detailed-about" x="120" y="130" transform="scale(1)" />
+              <use href="#peach-blossom-detailed-about" x="200" y="170" transform="scale(0.9)" />
+              <circle cx="150" cy="80" r="3.5" fill="#fbcfe8" />
+              <circle cx="90" cy="110" r="2.5" fill="#fbcfe8" />
+            </svg>
+          </div>
+
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Về bản thân tôi</h2>
           <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">

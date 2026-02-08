@@ -163,7 +163,7 @@
 
 // export default Hero;
 //--------------------------------------------
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Download } from 'lucide-react';
 import { SectionId } from '../types';
 import { motion } from 'framer-motion';
@@ -173,6 +173,7 @@ const Hero: React.FC = () => {
 
   const [text, setText] = useState('');
   const [isTypingDone, setIsTypingDone] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Typewriter – type once, then stop
   useEffect(() => {
@@ -186,6 +187,82 @@ const Hero: React.FC = () => {
       setIsTypingDone(true);
     }
   }, [text, fullText]);
+
+  // Fireworks Effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
+
+    const resize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', resize);
+
+    const particles: any[] = [];
+    const colors = ['#ef4444', '#eab308', '#22c55e', '#3b82f6', '#a855f7', '#f43f5e'];
+
+    const createExplosion = (x: number, y: number) => {
+      const count = 40; // Số lượng hạt mỗi pháo hoa
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 3 + 1;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color,
+          decay: Math.random() * 0.02 + 0.015
+        });
+      }
+    };
+
+    const loop = () => {
+      requestAnimationFrame(loop);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; // Tạo hiệu ứng đuôi mờ
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'lighter';
+
+      // Tự động bắn pháo hoa ngẫu nhiên
+      if (Math.random() < 0.03) {
+        createExplosion(Math.random() * w, Math.random() * h * 0.6);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.05; // Trọng lực
+        p.alpha -= p.decay;
+        
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    };
+
+    const frameId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
 
   const scrollToProjects = () => {
     document
@@ -203,6 +280,9 @@ const Hero: React.FC = () => {
         <div className="absolute top-[-8%] left-[-8%] w-72 h-72 sm:w-80 sm:h-80 bg-primary/18 rounded-full blur-[80px] animate-blob" />
         <div className="absolute bottom-[-8%] right-[-8%] w-72 h-72 sm:w-80 sm:h-80 bg-secondary/18 rounded-full blur-[80px] animate-blob animation-delay-2000" />
         <div className="absolute top-[45%] left-[45%] w-60 h-60 sm:w-72 sm:h-72 bg-purple-500/14 rounded-full blur-[80px] animate-blob animation-delay-4000" />
+        
+        {/* Fireworks Canvas Layer */}
+        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col-reverse lg:flex-row items-center">
@@ -266,36 +346,75 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.7 }}
           className="w-full lg:w-1/2 flex justify-center lg:justify-end mb-8 lg:mb-0"
         >
-          <div className="relative w-full max-w-[280px] sm:max-w-[360px] md:max-w-[440px] aspect-square">
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-2xl blur-xl animate-pulse" />
+          <div className="relative w-[300px] h-[300px] sm:w-[360px] sm:h-[360px] md:w-[420px] md:h-[420px] group">
+            
+            {/* 1. Background Aura (Hào quang Tết) */}
+            <div className="absolute -inset-6 bg-gradient-to-r from-red-600 via-amber-500 to-red-600 rounded-full blur-3xl opacity-50 animate-pulse" />
 
+            {/* 2. Rotating Rings (Vòng xoay tài lộc) */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-1 rounded-full border-[2px] border-dashed border-amber-500/40"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-4 rounded-full border border-dotted border-red-500/30"
+            />
+
+            {/* 3. Main Circular Frame */}
+            <div className="absolute inset-0 rounded-full border-4 border-amber-500 bg-slate-900 overflow-hidden shadow-[0_0_30px_rgba(245,158,11,0.4)] z-10 relative">
             <img
               src="https://scontent.fhan2-5.fna.fbcdn.net/v/t39.30808-6/624905967_4251737148436756_7500851371227167851_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=QbYC9JeFo3wQ7kNvwGwmccR&_nc_oc=AdkRROZboavhJoMMgCDvq8v92CTVGOUSF1AZvHCNrv1AStrjrb3WvSYV-cI1Jv91TSs&_nc_zt=23&_nc_ht=scontent.fhan2-5.fna&_nc_gid=iuar5ybGnO75mdryJiKQ1g&oh=00_Afs_75W-tgtaxZSQB7HgDjUeEo9KXERWAYbIjx7kDr7Q9Q&oe=698BAE63"
               alt="Developer Portrait"
-              className="relative w-full h-full object-cover rounded-2xl border border-gray-700/40 shadow-md transition-transform duration-400 z-10"
+                className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
             />
+              {/* Overlay Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-t from-red-900/50 via-transparent to-transparent pointer-events-none" />
+            </div>
 
-            {/* Floating elements (smaller, responsive) */}
+            {/* 4. Floating Badges */}
+            
+            {/* Badge: Year 2026 (Horse) */}
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -top-3 -right-3 w-16 h-12 bg-gray-800/80 backdrop-blur border border-gray-600 rounded-full shadow-md z-20 flex items-center justify-center"
+              animate={{ y: [-5, 5, -5] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute top-0 right-0 z-20 bg-gradient-to-r from-amber-400 to-amber-600 text-red-900 font-bold px-4 py-1.5 rounded-full shadow-lg border-2 border-white/20 transform rotate-12 flex items-center gap-1"
             >
+              <span>2026</span>
+              <span className="text-lg">🐎</span>
+            </motion.div>
+
+            {/* Badge: Experience (Red Envelope Style) */}
+            <motion.div
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+              className="absolute bottom-4 left-0 z-20 bg-red-600 text-amber-100 px-5 py-2 rounded-xl shadow-xl border border-amber-400/50 flex items-center gap-3 transform -rotate-6 hover:rotate-0 transition-transform group-hover:scale-105"
+            >
+              <div className="relative">
+                <div className="w-3 h-3 bg-amber-300 rounded-full animate-ping absolute inset-0" />
+                <div className="w-3 h-3 bg-amber-400 rounded-full relative" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[10px] uppercase text-amber-200 font-semibold tracking-wider">Kinh nghiệm</span>
+                <span className="text-base font-bold text-white leading-none">2+ Năm</span>
+              </div>
+            </motion.div>
+
+            {/* Badge: Flag */}
+            <div className="absolute bottom-8 right-2 z-20 w-14 h-14 rounded-full border-2 border-amber-500 overflow-hidden shadow-lg bg-slate-800 hover:scale-110 transition-transform">
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1280px-Flag_of_Vietnam.svg.png"
                 alt="Vietnam flag"
-                className="w-6 h-6 inline-block"
+                className="w-full h-full object-cover"
               />
-            </motion.div>
+            </div>
 
-            <motion.div
-              animate={{ y: [0, 6, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -bottom-2 -left-2 px-3 py-1 bg-dark border border-gray-700 rounded-md shadow-md z-20 flex items-center gap-2"
-            >
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
-              <span className="text-xs font-bold text-white">2+ Năm Kinh Nghiệm</span>
-            </motion.div>
+            {/* Decorative Apricot Blossoms (Hoa Mai) */}
+            <div className="absolute top-1/2 -left-4 w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_10px_#fbbf24] animate-bounce" style={{ animationDuration: '3s' }} />
+            <div className="absolute top-10 -right-2 w-2 h-2 bg-amber-300 rounded-full opacity-80" />
+            <div className="absolute -bottom-2 left-1/2 w-2 h-2 bg-red-500 rounded-full blur-[1px]" />
           </div>
         </motion.div>
       </div>

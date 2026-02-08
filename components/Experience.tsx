@@ -210,38 +210,109 @@ const Experience: React.FC = () => {
         </motion.div>
 
         <div className="relative">
-          {/* Vertical Line */}
-          <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 h-full w-1 bg-slate-700 rounded-full" />
+          {/* Vertical Line (Tree Trunk) */}
+          <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 h-full w-1.5 bg-amber-900/60 rounded-full shadow-[0_0_15px_rgba(120,53,15,0.3)]" />
 
-          <div className="space-y-12">
+          <div className="space-y-16">
             {timeline.map((item, index) => {
               const isEducation = item.type === 'education';
+              const isEven = index % 2 === 0; // Desktop: Content Right
 
               return (
                 <motion.div
                   key={item.id}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? 60 : -60 }}
+                  initial={{ opacity: 0, x: isEven ? 60 : -60 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6 }}
                   className={`flex flex-col md:flex-row ${
-                    index % 2 === 0 ? 'md:flex-row-reverse' : ''
+                    isEven ? 'md:flex-row-reverse' : ''
                   } items-center relative`}
                 >
-                  {/* Dot */}
-                  <div
-                    className={`absolute left-[-6px] md:left-1/2 md:-translate-x-1/2
-                    w-4 h-4 rounded-full border-4 z-10
-                    ${
-                      isEducation
-                        ? 'bg-secondary border-slate-900 shadow-[0_0_10px_rgba(34,197,94,0.5)]'
-                        : 'bg-primary border-slate-900 shadow-[0_0_10px_rgba(99,102,241,0.5)]'
-                    }`}
-                  />
+                  {/* Tree Branch & Lantern System */}
+                  <div className={`absolute top-6 z-10 flex items-center justify-center
+                    ${/* Mobile: Left aligned */ 'left-[-4px]'}
+                    ${/* Desktop: Center aligned */ 'md:left-1/2 md:-translate-x-1/2'}
+                  `}>
+                     {/* Connection Node (Trunk knot) */}
+                     <div className="absolute w-4 h-4 rounded-full bg-amber-800 border-2 border-amber-600 z-20 shadow-sm" />
+
+                     {/* Branch SVG */}
+                     <div className={`relative w-[140px] h-[100px] -mt-12 transition-transform duration-500 pointer-events-none
+                        ${/* Mobile: always point right */ 'origin-left'}
+                        ${/* Desktop: flip based on side */ isEven ? 'md:scale-x-100' : 'md:-scale-x-100'}
+                     `}>
+                        <svg width="100%" height="100%" viewBox="0 0 140 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-md">
+                          {/* Branch Path */}
+                          <path d="M0 50 Q 40 45, 70 50 T 130 40" stroke="#78350f" strokeWidth="3" strokeLinecap="round" />
+                          <path d="M70 50 Q 80 40, 90 35" stroke="#78350f" strokeWidth="2" strokeLinecap="round" />
+                          
+                          {/* Peach Blossoms (Hoa Đào) */}
+                          <g className="animate-pulse" style={{ animationDuration: '3s' }}>
+                             <circle cx="70" cy="50" r="4" fill="#f472b6" />
+                             <circle cx="70" cy="50" r="1.5" fill="#fef08a" />
+                          </g>
+                          <g className="animate-pulse" style={{ animationDuration: '4s' }}>
+                             <circle cx="90" cy="35" r="3" fill="#fbcfe8" />
+                             <circle cx="130" cy="40" r="5" fill="#f472b6" />
+                             <circle cx="130" cy="40" r="2" fill="#fef08a" />
+                          </g>
+                          <circle cx="110" cy="45" r="2" fill="#fbcfe8" />
+                          
+                          {/* Lantern String */}
+                          <line x1="100" y1="45" x2="100" y2="65" stroke="#fbbf24" strokeWidth="1" />
+                          
+                          {/* Lantern Body (Animated Swing) */}
+                          <g transform="translate(90, 65)">
+                             <animateTransform attributeName="transform" type="rotate" values="5 10 0; -5 10 0; 5 10 0" dur="4s" repeatCount="indefinite" additive="sum" />
+                             <path d="M10 0 H10" stroke="#fbbf24" strokeWidth="2" />
+                             <rect x="2" y="2" width="16" height="20" rx="5" fill="#dc2626" stroke="#b91c1c" strokeWidth="1" />
+                             <rect x="4" y="2" width="12" height="2" fill="#fbbf24" />
+                             <rect x="4" y="20" width="12" height="2" fill="#fbbf24" />
+                             <path d="M10 22 V 32" stroke="#dc2626" strokeWidth="1.5" />
+                             <circle cx="10" cy="32" r="1.5" fill="#fbbf24" />
+                             {/* Glow effect */}
+                             <circle cx="10" cy="12" r="8" fill="url(#lanternGlow)" opacity="0.6" />
+                          </g>
+                          
+                          <defs>
+                            <radialGradient id="lanternGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(10 12) rotate(90) scale(10)">
+                              <stop stopColor="#fbbf24" />
+                              <stop offset="1" stopColor="#fbbf24" stopOpacity="0" />
+                            </radialGradient>
+                          </defs>
+                        </svg>
+                     </div>
+                  </div>
 
                   {/* Content */}
-                  <div className="w-full md:w-1/2 pl-8 md:px-8">
-                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                  <div className="w-full md:w-1/2 pl-12 md:px-12">
+                    <div className="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg relative overflow-hidden group hover:border-pink-500/30 transition-all duration-300">
+                      
+                      {/* Decoration: Peach Blossom (Hoa Đào) */}
+                      <div className="absolute -top-2 -right-2 opacity-50 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                        <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          {/* Cành cây uốn lượn */}
+                          <path d="M70 10 C 50 30, 30 20, 10 40" stroke="#78350f" strokeWidth="1.5" strokeLinecap="round" />
+                          <path d="M40 25 C 45 35, 55 35, 60 40" stroke="#78350f" strokeWidth="1" strokeLinecap="round" />
+                          
+                          {/* Hoa đào nở (5 cánh) */}
+                          <g transform="translate(10, 40)">
+                            <circle cx="0" cy="-5" r="3" fill="#f472b6" />
+                            <circle cx="5" cy="-2" r="3" fill="#f472b6" />
+                            <circle cx="3" cy="4" r="3" fill="#f472b6" />
+                            <circle cx="-3" cy="4" r="3" fill="#f472b6" />
+                            <circle cx="-5" cy="-2" r="3" fill="#f472b6" />
+                            <circle cx="0" cy="0" r="1.5" fill="#fef08a" />
+                          </g>
+
+                          {/* Nụ hoa */}
+                          <circle cx="60" cy="40" r="2.5" fill="#fbcfe8" />
+                          <circle cx="25" cy="22" r="2" fill="#fbcfe8" />
+                        </svg>
+                      </div>
+                      <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-pink-500/5 rounded-full blur-xl group-hover:bg-pink-500/10 transition-colors" />
+
                       {/* Header */}
                       <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
                         {isEducation ? <GraduationCap size={18} /> : <Briefcase size={18} />}
@@ -281,4 +352,3 @@ const Experience: React.FC = () => {
 };
 
 export default Experience;
-
