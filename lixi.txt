@@ -1,235 +1,251 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Gift,
-  Sparkles,
-  Coins,
-  Lock,
-  Volume2,
-  VolumeX,
-  RotateCcw,
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Gift, Sparkles, Coins, MousePointerClick, Lock } from 'lucide-react';
+import { SectionId } from '../types';
 
-/* ================= CONFIG ================= */
+type Rarity = 'phổ biến' | 'hiếm' | 'đặc biệt';
+type Reward = { amount: number; fortune: string; rarity: Rarity };
 
-const OPEN_TIME = new Date('2026-02-17T00:00:00+07:00').getTime();
+const rewardPool: Reward[] = [
+  { amount: 20000, fortune: 'An khang thịnh vượng', rarity: 'phổ biến' },
+  { amount: 50000, fortune: 'Tấn tài tấn lộc', rarity: 'phổ biến' },
+  { amount: 68000, fortune: 'Lộc phát 68 – mọi việc hanh thông', rarity: 'hiếm' },
+  { amount: 100000, fortune: 'Vạn sự như ý', rarity: 'hiếm' },
+  { amount: 200000, fortune: 'Đặc biệt: Lộc lớn đầu năm!', rarity: 'đặc biệt' },
+  { amount: 0, fortune: 'Voucher coffee tự thưởng nhé ☕', rarity: 'phổ biến' },
+];
 
-const STORAGE_RESULT = 'lucky_result_v2';
-const STORAGE_STATS = 'lucky_stats_v2';
-const STORAGE_FINGERPRINT = 'lucky_fp_v2';
+const rarityStyle: Record<Rarity, string> = {
+  'phổ biến': 'text-amber-200 bg-amber-500/10 border-amber-500/25',
+  'hiếm': 'text-rose-100 bg-rose-500/10 border-rose-500/30',
+  'đặc biệt': 'text-emerald-100 bg-emerald-500/15 border-emerald-500/40',
+};
 
 const ENVELOPE_COUNT = 6;
-
-type RewardType = 'money' | 'payback';
-
-type Reward = {
-  type: RewardType;
-  amount?: number;
-  message: string;
-};
-
-/* ================= HELPERS ================= */
-
-const getFingerprint = () => {
-  let fp = localStorage.getItem(STORAGE_FINGERPRINT);
-  if (!fp) {
-    fp =
-      navigator.userAgent +
-      screen.width +
-      screen.height +
-      Intl.DateTimeFormat().resolvedOptions().timeZone +
-      Math.random().toString(36).slice(2);
-    localStorage.setItem(STORAGE_FINGERPRINT, fp);
-  }
-  return fp;
-};
-
-const now = () => new Date().getTime();
-
-/* ================= COMPONENT ================= */
+const STORAGE_KEY = 'lucky-money-result';
+const DEFAULT_STATUS = 'Bạn có 1 lượt duy nhất. Chọn phong bao để nhận lộc!';
 
 const LuckyMoney: React.FC = () => {
-  const [locked, setLocked] = useState(true);
-  const [countdown, setCountdown] = useState('');
-  const [result, setResult] = useState<Reward | null>(null);
-  const [openedIndex, setOpenedIndex] = useState<number | null>(null);
-  const [musicOn, setMusicOn] = useState(true);
-  const [stats, setStats] = useState({ total: 0, payback: 0 });
+  const [opened, setOpened] = useState<Record<number, Reward>>({});
+  const [lockedResult, setLockedResult] = useState<{ index: number; reward: Reward } | null>(null);
+  const [status, setStatus] = useState(DEFAULT_STATUS);
+  const [confettiKey, setConfettiKey] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  /* ===== Countdown ===== */
+  const playsLeft = lockedResult ? 0 : 1;
+  const totalAmount = useMemo(
+    () => Object.values(opened).reduce((sum, r) => sum + r.amount, 0),
+    [opened]
+  );
+
+  // Load saved result (nếu đã bốc trước đó)
   useEffect(() => {
-    const timer = setInterval(() => {
-      const diff = OPEN_TIME - now();
-      if (diff <= 0) {
-        setLocked(false);
-        clearInterval(timer);
-      } else {
-        const h = Math.floor(diff / 1000 / 3600);
-        const m = Math.floor((diff / 1000 % 3600) / 60);
-        const s = Math.floor(diff / 1000 % 60);
-        setCountdown(`${h}h ${m}m ${s}s`);
+    const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw) as { index: number; reward: Reward };
+      if (saved && saved.reward) {
+        setLockedResult(saved);
+        setOpened({ [saved.index]: saved.reward });
+        setStatus(
+          `Bạn đã nhận: ${saved.reward.fortune} — ${
+            saved.reward.amount > 0
+              ? `${saved.reward.amount.toLocaleString('vi-VN')} đ`
+              : 'Lộc may mắn'
+          }. Mỗi người chỉ bốc 1 lần.`
+        );
       }
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  /* ===== Load saved ===== */
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_RESULT);
-    const statRaw = localStorage.getItem(STORAGE_STATS);
-
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      setResult(parsed.reward);
-      setOpenedIndex(parsed.index);
-    }
-
-    if (statRaw) {
-      setStats(JSON.parse(statRaw));
+    } catch {
+      // ignore parse errors
     }
   }, []);
 
-  /* ===== Reward Logic ===== */
-  const generateReward = (): Reward => {
-    const statRaw = localStorage.getItem(STORAGE_STATS);
-    const current = statRaw
-      ? JSON.parse(statRaw)
-      : { total: 0, payback: 0 };
+  const handleOpen = (idx: number) => {
+    if (lockedResult) return;
 
-    const nextTotal = current.total + 1;
-    const paybackLimit = Math.floor(nextTotal / 5); // ~2/10
+    const reward = rewardPool[Math.floor(Math.random() * rewardPool.length)];
+    setOpened({ [idx]: reward });
+    setLockedResult({ index: idx, reward });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ index: idx, reward }));
 
-    let reward: Reward;
+    const amountText = reward.amount > 0 ? `${reward.amount.toLocaleString('vi-VN')} đ` : 'Lộc may mắn';
+    setStatus(`${reward.fortune} — bạn nhận được ${amountText}. Bạn đã dùng hết lượt duy nhất!`);
 
-    if (current.payback < paybackLimit) {
-      reward = {
-        type: 'payback',
-        message: '🎁 Lộc này xin gửi lại cho chủ nhà nhé ❤️',
-      };
-      current.payback++;
-    } else {
-      const moneyPool = [10000, 20000, 50000, 68000, 100000];
-      reward = {
-        type: 'money',
-        amount: moneyPool[Math.floor(Math.random() * moneyPool.length)],
-        message: '🧧 Lộc đầu năm – chúc bạn phát tài!',
-      };
-    }
-
-    current.total++;
-    localStorage.setItem(STORAGE_STATS, JSON.stringify(current));
-    setStats(current);
-
-    return reward;
+    setConfettiKey((k) => k + 1);
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 1600);
   };
-
-  /* ===== Open ===== */
-  const openEnvelope = (idx: number) => {
-    if (locked || result) return;
-
-    const reward = generateReward();
-    setOpenedIndex(idx);
-    setResult(reward);
-
-    localStorage.setItem(
-      STORAGE_RESULT,
-      JSON.stringify({ index: idx, reward, fp: getFingerprint() })
-    );
-  };
-
-  /* ================= UI ================= */
 
   return (
-    <section className="min-h-screen bg-gradient-to-b from-red-950 via-red-900 to-amber-900 text-amber-100 flex items-center justify-center p-6">
-      <audio
-        src="https://docs.google.com/uc?export=download&id=1C8Q0zK2bC0"
-        autoPlay={musicOn}
-        loop
-      />
-
-      <div className="max-w-4xl w-full space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/30 text-sm">
+    <section
+      id={SectionId.LUCKY}
+      className="relative py-20 overflow-hidden bg-gradient-to-b from-[#210507] via-[#2d0a0e] to-[#150507] text-amber-100"
+    >
+      <Backdrop />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="text-center mb-12 space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-100 text-xs tracking-[0.2em] uppercase">
             <Sparkles size={16} /> Lì xì online
           </div>
-          <h1 className="text-3xl font-bold">Mở bao lì xì đầu năm</h1>
-        </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-amber-50">
+            Mở bao lì xì – mỗi người 1 lần duy nhất
+          </h2>
+          <p className="text-amber-100/80 max-w-2xl mx-auto">
+            Bạn có {playsLeft} lượt còn lại. Nếu đã bốc, lần sau vào lại sẽ không thể bốc nữa.
+          </p>
+        </header>
 
-        {/* Countdown */}
-        {locked && (
-          <div className="bg-black/30 border border-amber-500/30 rounded-2xl p-6 text-center">
-            <Lock className="mx-auto mb-2" />
-            <p className="text-lg">Chưa đến giờ mở lì xì</p>
-            <p className="text-2xl font-bold text-amber-300 mt-2">
-              {countdown}
-            </p>
-          </div>
-        )}
-
-        {/* Envelopes */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {Array.from({ length: ENVELOPE_COUNT }).map((_, idx) => (
-            <motion.button
-              key={idx}
-              disabled={!!result || locked}
-              whileHover={!locked && !result ? { y: -6 } : {}}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => openEnvelope(idx)}
-              className={`h-36 rounded-2xl border flex flex-col items-center justify-center shadow-lg
-                ${
-                  openedIndex === idx
-                    ? 'bg-amber-500/30 border-amber-300'
-                    : 'bg-red-700 border-amber-500/40'
-                }`}
-            >
-              <Gift size={32} />
-              <span className="mt-2">Phong bao {idx + 1}</span>
-            </motion.button>
-          ))}
-        </div>
-
-        {/* Result */}
-        <AnimatePresence>
-          {result && (
-            <motion.div
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-black/40 border border-amber-400/40 rounded-2xl p-6 text-center space-y-3"
-            >
-              <p className="text-xl">{result.message}</p>
-              {result.type === 'money' && (
-                <p className="text-3xl font-bold text-amber-300">
-                  {result.amount?.toLocaleString('vi-VN')} đ
-                </p>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
+          {/* Envelopes */}
+          <div className="bg-white/5 border border-amber-500/20 rounded-2xl p-6 lg:p-8 shadow-xl shadow-red-900/30 backdrop-blur">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2 text-sm text-amber-200/80">
+                <MousePointerClick size={16} /> Nhấn vào phong bao để mở (1 lần duy nhất)
+              </div>
+              {lockedResult && (
+                <span className="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold bg-amber-500/15 border border-amber-500/30 text-amber-100">
+                  <Lock size={14} /> Đã bốc
+                </span>
               )}
-              {result.type === 'payback' && (
-                <p className="text-sm text-amber-200">
-                  💌 Mệnh giá tùy tâm – lì xì lại cho chủ nhà nhé
-                </p>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="bg-black/30 p-4 rounded-xl">
-            👥 Tổng người chơi: <b>{stats.total}</b>
-          </div>
-          <div className="bg-black/30 p-4 rounded-xl">
-            🔄 Trúng “lì xì lại”: <b>{stats.payback}</b>
-          </div>
-        </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {Array.from({ length: ENVELOPE_COUNT }).map((_, idx) => {
+                const reward = opened[idx];
+                const disabled = !!lockedResult;
+                const isChosen = lockedResult?.index === idx;
+                return (
+                  <motion.button
+                    key={idx}
+                    whileHover={{ y: disabled ? 0 : -6, rotate: disabled ? 0 : 1.5 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => handleOpen(idx)}
+                    disabled={disabled}
+                    className={`relative overflow-hidden rounded-2xl p-4 h-36 flex flex-col items-center justify-center text-center border shadow-lg transition
+                      ${disabled ? 'opacity-80 cursor-not-allowed border-amber-500/25 bg-gradient-to-b from-rose-900/60 to-amber-900/40'
+                                  : 'cursor-pointer border-amber-500/40 bg-gradient-to-b from-rose-700 to-amber-600 hover:shadow-red-900/40'}
+                      ${isChosen ? 'ring-2 ring-amber-300/70' : ''}`}
+                  >
+                    {!reward && (
+                      <div className="text-white space-y-2">
+                        <Gift className="mx-auto" />
+                        <p className="text-sm font-semibold">Phong bao #{idx + 1}</p>
+                        <p className="text-[11px] text-amber-100/80">Mở nhận lộc</p>
+                      </div>
+                    )}
 
-        {/* Controls */}
-        <div className="flex justify-center gap-4">
-          <button onClick={() => setMusicOn(!musicOn)}>
-            {musicOn ? <Volume2 /> : <VolumeX />}
-          </button>
+                    {reward && (
+                      <div className="text-center space-y-2">
+                        <span className={`inline-flex px-2 py-1 rounded-full text-[11px] font-semibold border ${rarityStyle[reward.rarity]}`}>
+                          {reward.rarity}
+                        </span>
+                        <p className="text-lg font-bold text-white">
+                          {reward.amount > 0 ? `${reward.amount.toLocaleString('vi-VN')} đ` : 'Lộc may mắn'}
+                        </p>
+                        <p className="text-xs text-amber-100/80">{reward.fortune}</p>
+                      </div>
+                    )}
+                  </motion.button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Scoreboard */}
+          <div className="space-y-4">
+            <div className="bg-white/5 border border-amber-500/20 rounded-2xl p-6 shadow-xl shadow-red-900/30 backdrop-blur">
+              <div className="flex items-center gap-3 mb-3 text-amber-100">
+                <Coins /> <span className="font-semibold text-lg">Bảng điểm</span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <Stat label="Lượt còn lại" value={`${playsLeft}`} />
+                <Stat label="Phong bao đã mở" value={Object.keys(opened).length.toString()} />
+                <Stat label="Tổng tiền lộc" value={`${totalAmount.toLocaleString('vi-VN')} đ`} highlight />
+                <Stat
+                  label="Tỉ lệ đặc biệt"
+                  value={`${Math.round(
+                    (Object.values(opened).filter((r) => r.rarity === 'đặc biệt').length /
+                      Math.max(1, Object.keys(opened).length || 1)) *
+                      100
+                  )}%`}
+                />
+              </div>
+              <p className="mt-4 text-amber-100/80 text-sm leading-relaxed">{status}</p>
+            </div>
+
+            <div className="bg-white/5 border border-amber-500/20 rounded-2xl p-6 backdrop-blur">
+              <h4 className="font-semibold text-amber-50 mb-2">Luật chơi</h4>
+              <ul className="space-y-2 text-sm text-amber-100/80">
+                <li>• Mỗi người 1 lượt duy nhất.</li>
+                <li>• Bốc xong sẽ khóa, lần sau vào lại không thể bốc nữa.</li>
+                <li>• Phần thưởng ngẫu nhiên: tiền lộc hoặc lời chúc vui.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
+
+      {showConfetti && <Confetti seed={confettiKey} />}
     </section>
+  );
+};
+
+const Stat: React.FC<{ label: string; value: string; highlight?: boolean }> = ({ label, value, highlight }) => (
+  <div className="p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
+    <p className="text-xs text-amber-100/70 mb-1">{label}</p>
+    <p className={`text-lg font-semibold ${highlight ? 'text-amber-200' : 'text-white'}`}>{value}</p>
+  </div>
+);
+
+const Backdrop: React.FC = () => (
+  <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute -left-10 top-24 w-48 h-48 bg-amber-500/20 blur-3xl" />
+    <div className="absolute right-0 bottom-10 w-64 h-64 bg-red-500/20 blur-3xl" />
+    <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(255,193,7,0.1),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(248,113,113,0.12),transparent_30%),radial-gradient(circle_at_50%_70%,rgba(248,180,0,0.1),transparent_30%)]" />
+  </div>
+);
+
+const Confetti: React.FC<{ seed: number }> = ({ seed }) => {
+  const colors = ['#fcd34d', '#f87171', '#fb7185', '#a3e635', '#34d399', '#60a5fa'];
+  const pieces = useMemo(
+    () =>
+      Array.from({ length: 45 }, (_, i) => ({
+        id: `${seed}-${i}`,
+        left: Math.random() * 100,
+        duration: 1.1 + Math.random() * 0.8,
+        delay: Math.random() * 0.25,
+        size: 6 + Math.random() * 8,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotate: Math.random() * 360,
+      })),
+    [seed]
+  );
+
+  return (
+    <>
+      <style>{`
+        @keyframes confetti-fall {
+          0%   { transform: translate3d(0,-10%,0) rotate(0deg); opacity: 1; }
+          100% { transform: translate3d(0,110vh,0) rotate(360deg); opacity: 0.2; }
+        }
+      `}</style>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {pieces.map((p) => (
+          <span
+            key={p.id}
+            className="absolute rounded-sm"
+            style={{
+              left: `${p.left}%`,
+              width: p.size,
+              height: p.size * 0.6,
+              backgroundColor: p.color,
+              animation: `confetti-fall ${p.duration}s ease-out ${p.delay}s forwards`,
+              transform: `rotate(${p.rotate}deg)`,
+            }}
+          />
+        ))}
+      </div>
+    </>
   );
 };
 
