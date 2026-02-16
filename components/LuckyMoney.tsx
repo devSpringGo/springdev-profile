@@ -4,7 +4,7 @@ import { Sparkles, Volume2, VolumeX, Gift } from 'lucide-react';
 
 /* ================= CONFIG ================= */
 
-const OPEN_TIME = new Date('2026-02-17T00:00:00+07:00').getTime();
+const OPEN_TIME = new Date('2026-11-17T00:00:00+07:00').getTime();
 
 const STORAGE_RESULT = 'lucky_result_v2';
 const STORAGE_STATS = 'lucky_stats_v2';
