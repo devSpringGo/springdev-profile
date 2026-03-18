@@ -23,7 +23,7 @@ function App() {
       <Navbar />
       <main className="relative z-10">
         <Hero />
-                <LuckyMoney />   {/* mới, đặt sớm để người dùng thấy mini‑game */}
+        {/* <LuckyMoney />    */}
 
         <About />
         <Experience />

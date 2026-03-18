@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
     { id: SectionId.ABOUT, label: 'Giới thiệu' },
     { id: SectionId.EXPERIENCE, label: 'Kinh nghiệm' },
     { id: SectionId.PROJECTS, label: 'Dự án' },
-        { id: SectionId.LUCKY, label: 'Lì xì online' }, // mới
+    //{ id: SectionId.LUCKY, label: 'Lì xì online' }, // mới
 
     { id: SectionId.CONTACT, label: 'Liên hệ' },
   ];

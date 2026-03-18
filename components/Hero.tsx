@@ -366,7 +366,7 @@ const Hero: React.FC = () => {
             {/* 3. Main Circular Frame */}
             <div className="absolute inset-0 rounded-full border-4 border-amber-500 bg-slate-900 overflow-hidden shadow-[0_0_30px_rgba(245,158,11,0.4)] z-10 relative">
             <img
-              src="https://scontent.fdad1-2.fna.fbcdn.net/v/t39.30808-6/624905967_4251737148436756_7500851371227167851_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=Flg9je5xBlQQ7kNvwFq_rIN&_nc_oc=AdnlpX0snIDZJjiTpnXmk5Q7uOxW8oHct9F0YaVo8D_RVlhyey7mOyYkfcjfv-Ywia5MqXlKABc2tX4GutnKEMRC&_nc_zt=23&_nc_ht=scontent.fdad1-2.fna&_nc_gid=YmO_Uh1St_F67x-YdyzxWQ&oh=00_AfsIWHQ-F9gHWwrsv1HvrdU72NmHr-yPaW7l59RNoJhcdw&oe=699915A3"
+              src="https://res.cloudinary.com/dgejmagns/image/upload/0d323034-c750-479a-91f0-bdde8fae45f1.png"
               alt="Developer Portrait"
                 className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
             />
