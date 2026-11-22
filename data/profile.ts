@@ -88,7 +88,7 @@ export const NOW = {
   updated: 'Tháng 11, 2026',
   items: [
     { label: 'Đang làm', text: 'Các module nội bộ ở Công ty Bánh Đồng Tiến, từ cơ sở dữ liệu tới giao diện.' },
-    { label: 'Đang học', text: 'React, TypeScript và cách đưa AI vào sản phẩm (trang này có một trợ lý dùng Gemini).' },
+    { label: 'Đang học', text: 'TypeScript và cách đưa AI vào sản phẩm (trang này có một trợ lý dùng Gemini).' },
     { label: 'Đang viết', text: 'Ghi chép về SQL Server và chuyện làm phần mềm nội bộ trên blog.' },
     { label: 'Đang ở', text: 'Đà Nẵng.' },
   ],
@@ -104,7 +104,7 @@ export const TOOLBOX: { group: string; note: string; items: string[] }[] = [
   {
     group: 'Đã từng làm việc với',
     note: 'Dùng thực tế ở các công ty trước.',
-    items: ['VB.NET', 'ADO.NET', 'WinForms', 'Oracle', 'JavaScript', 'HTML/CSS', 'Bootstrap', 'SourceTree', 'Figma'],
+    items: ['React', 'Python', 'VB.NET', 'ADO.NET', 'WinForms', 'Oracle', 'JavaScript', 'HTML/CSS', 'Bootstrap', 'SourceTree', 'Figma'],
   },
   {
     group: 'Cũng có thể làm tốt',
@@ -114,7 +114,7 @@ export const TOOLBOX: { group: string; note: string; items: string[] }[] = [
   {
     group: 'Thêm vào đó là',
     note: 'Học thêm ngoài giờ, trang này là nơi thử nghiệm.',
-    items: ['React', 'TypeScript', 'Tailwind CSS', 'Gemini API'],
+    items: ['TypeScript', 'Tailwind CSS', 'Gemini API'],
   },
 ];
 
@@ -188,52 +188,61 @@ export const JOURNEY: Chapter[] = [
 
 export type Work = {
   title: string;
+  /** Nhóm / loại dự án, hiện phía trên tên dự án */
+  category: string;
+  /** Nơi làm và thời gian, ví dụ 'Công ty Bánh Đồng Tiến · 2025'. Để '' nếu chưa có. */
   org: string;
   description: string;
+  /** Công nghệ sử dụng. Để [] nếu chưa có. */
   stack: string[];
+  /** Một con số / điểm nổi bật, hiện thành nhãn riêng (không bắt buộc) */
+  highlight?: string;
   /** Kiểu hình minh hoạ trên thẻ dự án */
-  cover: 'modules' | 'contract' | 'ledger' | 'desktop' | 'web';
+  cover: 'devices' | 'kpi' | 'leads' | 'camera' | 'tts';
+  /** Link demo hoặc mã nguồn (không bắt buộc) */
   url?: string;
 };
 
-// Sửa / bổ sung dự án tại đây. Thêm `url` nếu có link demo hoặc mã nguồn.
+// Sửa / bổ sung dự án tại đây. Dự án đầu tiên được hiển thị thành thẻ lớn.
 export const WORKS: Work[] = [
   {
-    title: 'Phần mềm nội bộ Đồng Tiến',
-    org: 'Công ty Bánh Đồng Tiến · 2025 — nay',
-    description:
-      'Các module phục vụ vận hành hằng ngày của công ty. Mình làm từ khâu nghe yêu cầu, thiết kế dữ liệu, dựng giao diện đến triển khai.',
-    stack: ['.NET', 'SQL Server'],
-    cover: 'modules',
+    title: 'Quản lý thiết bị công ty',
+    category: 'Quản lý tài sản',
+    org: '',
+    description: 'Theo dõi danh sách thiết bị của công ty cùng tình trạng sử dụng của từng thiết bị.',
+    stack: ['ASP.NET Core', 'React', 'SQL Server'],
+    cover: 'devices',
   },
   {
-    title: 'Soạn thảo & quản lý hợp đồng',
-    org: 'Chailease · Phòng CSD',
-    description: 'Soạn thảo, lưu trữ và theo dõi hợp đồng cho thuê tài chính.',
-    stack: ['VB.NET', 'ADO.NET', 'SQL Server'],
-    cover: 'contract',
+    title: 'Quản lý công việc & chấm KPI',
+    category: 'Quản lý công việc',
+    org: '',
+    description: 'Giao việc, theo dõi tiến độ và chấm điểm KPI.',
+    stack: ['ASP.NET Core', 'React', 'SQL Server'],
+    cover: 'kpi',
   },
   {
-    title: 'Nghiệp vụ kế toán cho thuê',
-    org: 'Chailease · Phòng Kế toán',
-    description: 'Màn hình và Stored Procedure cho nghiệp vụ cho thuê, chạy ổn định trên dữ liệu lớn.',
-    stack: ['VB.NET', 'SQL Server'],
-    cover: 'ledger',
+    title: 'Quản lý khách hàng tiềm năng mùa Trung thu',
+    category: 'Bán hàng · Khách hàng',
+    org: '',
+    description: 'Quản lý danh sách khách hàng tiềm năng cho mùa Trung thu.',
+    stack: ['ASP.NET Core', 'React', 'SQL Server'],
+    cover: 'leads',
   },
   {
-    title: 'Ứng dụng cho khách hàng Nhật',
-    org: 'Fujinet Systems · 2023',
-    description: 'Chức năng và Stored Procedure cho ứng dụng WinForms của khách hàng Nhật Bản.',
-    stack: ['C#', 'WinForms', 'SQL Server'],
-    cover: 'desktop',
+    title: 'Quản lý camera & đầu ghi',
+    category: 'Hạ tầng · An ninh',
+    org: '',
+    description: 'Quản lý hệ thống camera và đầu ghi.',
+    stack: ['C#', 'WinForms'],
+    cover: 'camera',
   },
   {
-    title: 'springgo.xyz',
-    org: 'Dự án cá nhân',
-    description: 'Trang web này: hồ sơ, blog, và một trợ lý trả lời câu hỏi về mình qua Gemini API.',
-    stack: ['React', 'TypeScript', 'Vite'],
-    cover: 'web',
-    url: 'https://springgo.xyz',
+    title: 'Tool chuyển văn bản thành giọng nói',
+    category: 'Công cụ · Text to Speech',
+    org: '',
+    description: 'Công cụ chuyển văn bản tiếng Việt thành giọng nói, có 28 giọng để lựa chọn.',
+    stack: ['Python'],
+    cover: 'tts',
   },
 ];
-
