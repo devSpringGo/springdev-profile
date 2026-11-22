@@ -1,0 +1,26 @@
+# Cloudflare Worker: bot Telegram viết bài -> duyệt -> đăng blog
+# Hướng dẫn cài đặt: xem telegram-bot/README.md
+
+name = "springgo-blog-bot"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+
+[vars]
+# Chat ID Telegram của anh. Để trống lúc đầu, nhắn /id cho bot để lấy số này rồi điền vào.
+ALLOWED_CHAT_ID = "5642891542"
+# Model Gemini dùng để viết bài (giống model trợ lý trên trang)
+GEMINI_MODEL = "gemini-3-flash-preview"
+# Repo chứa trang web và nhánh Cloudflare Pages đang build
+GITHUB_REPO = "devSpringGo/springdev-profile"
+GITHUB_BRANCH = "Main"
+BLOG_DIR = "content/blog"
+SITE_URL = "https://springgo.xyz"
+
+# Nơi lưu bản nháp đang chờ duyệt.
+# Tạo bằng: npx wrangler kv namespace create DRAFTS  -> dán id vào dưới đây
+[[kv_namespaces]]
+binding = "DRAFTS"
+id = "c72520e3fd994122809a5e30a986f19e"
+
+# Các khoá bí mật KHÔNG để ở đây, đặt bằng `npx wrangler secret put <TÊN>`:
+#   TELEGRAM_BOT_TOKEN, TELEGRAM_WEBHOOK_SECRET, GEMINI_API_KEY, GITHUB_TOKEN

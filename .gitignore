@@ -25,3 +25,7 @@ dist-ssr
 
 # File cài đặt / file lớn, không đưa lên git
 *.exe
+
+# Bot Telegram (Cloudflare Worker): khoá bí mật khi chạy thử và file tạm của wrangler
+.dev.vars
+.wrangler

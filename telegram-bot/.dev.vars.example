@@ -1,0 +1,6 @@
+# Chỉ dùng khi chạy thử trên máy (npm run dev). Copy thành .dev.vars rồi điền.
+# File .dev.vars đã được gitignore, KHÔNG commit.
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_WEBHOOK_SECRET=
+GEMINI_API_KEY=
+GITHUB_TOKEN=
