@@ -35,12 +35,12 @@ function App() {
   const route = useRoute();
   const key = routeKey(route);
 
-  // Khi đổi trang: lên đầu trang, hoặc cuộn tới mục nếu link trỏ vào trang chủ (vd. #contact)
+  // Khi đổi trang: lên đầu trang, hoặc cuộn tới mục nếu link có neo (vd. /#contact, /blog/bai#muc-luc)
   useEffect(() => {
     const hash = window.location.hash;
-    if (route.name === 'home' && hash.length > 1 && !hash.startsWith('#/')) {
-      const go = () =>
-        document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
+    const id = hash.length > 1 ? decodeURIComponent(hash.slice(1)) : '';
+    if (id && document.getElementById(id)) {
+      const go = () => document.getElementById(id)?.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
       go();
       // Lần tải đầu: font và CSS có thể làm bố cục dịch chuyển, nên cuộn lại khi trang tải xong
       if (document.readyState !== 'complete') {

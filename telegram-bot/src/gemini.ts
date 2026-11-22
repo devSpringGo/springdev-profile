@@ -1,8 +1,11 @@
 import type { Draft, Env, Turn } from './types.ts';
 import { DRAFT_SCHEMA, SYSTEM_PROMPT } from './prompt.ts';
 
+/** Ảnh gửi kèm lượt hỏi cuối cùng để AI nhìn thấy (không lưu vào lịch sử cho nhẹ). */
+export type Attachment = { mimeType: string; data: string /* base64 */ };
+
 /** Gọi Gemini để viết (hoặc viết lại) bài. `history` là toàn bộ cuộc hội thoại tới giờ. */
-export async function writeDraft(env: Env, history: Turn[]): Promise<Draft> {
+export async function writeDraft(env: Env, history: Turn[], attachments: Attachment[] = []): Promise<Draft> {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(env.GEMINI_MODEL)}:generateContent`;
 
   const res = await fetch(url, {
@@ -10,7 +13,13 @@ export async function writeDraft(env: Env, history: Turn[]): Promise<Draft> {
     headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      contents: history.map((t) => ({ role: t.role, parts: [{ text: t.text }] })),
+      contents: history.map((t, i) => ({
+        role: t.role,
+        parts: [
+          ...(i === history.length - 1 ? attachments.map((a) => ({ inlineData: { mimeType: a.mimeType, data: a.data } })) : []),
+          { text: t.text },
+        ],
+      })),
       generationConfig: {
         temperature: 0.7,
         responseMimeType: 'application/json',

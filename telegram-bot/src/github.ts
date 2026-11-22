@@ -1,5 +1,5 @@
 import type { Env } from './types.ts';
-import { fromBase64, parseMarkdown, toBase64 } from './markdown.ts';
+import { bytesToBase64, fromBase64, parseMarkdown, toBase64 } from './markdown.ts';
 
 const headers = (env: Env, json = false): Record<string, string> => ({
   Authorization: `Bearer ${env.GITHUB_TOKEN}`,
@@ -99,4 +99,40 @@ export async function deleteFile(env: Env, filePath: string, sha: string, messag
     body: JSON.stringify({ message, sha, branch: env.GITHUB_BRANCH }),
   });
   if (!res.ok) return fail(res, 'xoá bài');
+}
+
+/**
+ * Ghi nhiều file trong MỘT commit (bài viết + ảnh), để Cloudflare Pages chỉ build lại một lần
+ * và trang không bao giờ có bài mà thiếu ảnh. Dùng Git Data API: blob -> tree -> commit -> cập nhật nhánh.
+ */
+export async function commitFiles(env: Env, files: { path: string; content: string | Uint8Array }[], message: string): Promise<void> {
+  const branchRef = `/git/refs/heads/${encodeURIComponent(env.GITHUB_BRANCH)}`;
+  const json = async <T>(res: Response, what: string): Promise<T> => (res.ok ? ((await res.json()) as T) : fail(res, what));
+
+  // Tạo blob trước (không phụ thuộc nhánh), để lần thử lại không phải tải ảnh lên lần nữa
+  const blobs = await Promise.all(
+    files.map(async (f) => {
+      const content = typeof f.content === 'string' ? toBase64(f.content) : bytesToBase64(f.content);
+      const res = await api(env, '/git/blobs', { method: 'POST', body: JSON.stringify({ content, encoding: 'base64' }) });
+      const { sha } = await json<{ sha: string }>(res, `tải lên ${f.path}`);
+      return { path: f.path, mode: '100644', type: 'blob', sha };
+    })
+  );
+
+  // Nếu nhánh vừa có commit khác chen vào (ví dụ anh push từ máy), làm lại từ commit mới nhất
+  for (let attempt = 1; ; attempt++) {
+    const head = await json<{ object: { sha: string } }>(await api(env, `/git/ref/heads/${encodeURIComponent(env.GITHUB_BRANCH)}`), 'đọc nhánh');
+    const parent = await json<{ tree: { sha: string } }>(await api(env, `/git/commits/${head.object.sha}`), 'đọc commit');
+    const tree = await json<{ sha: string }>(
+      await api(env, '/git/trees', { method: 'POST', body: JSON.stringify({ base_tree: parent.tree.sha, tree: blobs }) }),
+      'tạo cây thư mục'
+    );
+    const commit = await json<{ sha: string }>(
+      await api(env, '/git/commits', { method: 'POST', body: JSON.stringify({ message, tree: tree.sha, parents: [head.object.sha] }) }),
+      'tạo commit'
+    );
+    const res = await api(env, branchRef, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha, force: false }) });
+    if (res.ok) return;
+    if (res.status !== 422 || attempt >= 3) return fail(res, 'cập nhật nhánh');
+  }
 }

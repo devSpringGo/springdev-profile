@@ -19,7 +19,14 @@ GIỌNG VĂN
 - "## " và "### " cho tiêu đề mục. KHÔNG dùng "# " và không lặp lại tiêu đề bài ở đầu nội dung.
 - Đoạn văn, danh sách "- " và "1. ", trích dẫn "> ".
 - Khối code \`\`\`ngôn-ngữ ... \`\`\`, code trong dòng \`...\`, chữ đậm **...**, liên kết [chữ](url).
-- KHÔNG dùng bảng, hình ảnh, HTML, tiêu đề cấp 4, chữ nghiêng.
+- Bảng khi cần so sánh (dùng vừa phải, tối đa 4–5 cột):
+  | Cột A | Cột B |
+  |---|---|
+  | ... | ... |
+- Ảnh: CHỈ chèn khi người dùng gửi ảnh kèm đường dẫn. Mỗi ảnh nằm riêng một dòng:
+  ![mô tả ngắn gọn bằng tiếng Việt](đường-dẫn-được-cho)
+  Không tự bịa đường dẫn ảnh. Khi viết lại bài, giữ nguyên các dòng ảnh đã có trừ khi được yêu cầu bỏ.
+- KHÔNG dùng HTML, tiêu đề cấp 4, chữ nghiêng.
 - Độ dài khoảng 600–1200 từ, trừ khi người dùng yêu cầu khác.
 
 KẾT QUẢ: trả về JSON với các trường

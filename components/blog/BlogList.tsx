@@ -1,10 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { Search } from 'lucide-react';
-import { allTags, formatDate, posts } from '../../data/posts';
+import { Rss, Search } from 'lucide-react';
+import { allTags, formatDate, postPath, posts } from '../../data/posts';
+import { SITE } from '../../lib/blog';
+import { usePageMeta } from './BlogPost';
 
 const BlogList: React.FC = () => {
   const [tag, setTag] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+
+  usePageMeta(SITE.blogTitle, SITE.blogDescription, `${SITE.url}/blog`);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -35,9 +39,10 @@ const BlogList: React.FC = () => {
     <div className="mx-auto max-w-3xl px-6 py-14 sm:px-10 sm:py-20">
       <header>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Bài viết</h1>
-        <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted">
-          Nơi mình ghi lại chuyện .NET, SQL Server và những điều học được khi làm phần mềm cho doanh nghiệp.
-        </p>
+        <p className="mt-4 max-w-xl text-lg leading-relaxed text-muted">{SITE.blogDescription}</p>
+        <a href="/rss.xml" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-muted hover:text-accent transition-colors">
+          <Rss size={14} /> Theo dõi qua RSS
+        </a>
       </header>
 
       <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -73,7 +78,7 @@ const BlogList: React.FC = () => {
             <ul>
               {g.items.map((p) => (
                 <li key={p.slug} className="border-b border-line">
-                  <a href={`#/blog/${p.slug}`} className="group grid gap-1 py-7 sm:grid-cols-[7.5rem_1fr] sm:gap-6">
+                  <a href={postPath(p.slug)} className="group grid gap-1 py-7 sm:grid-cols-[7.5rem_1fr] sm:gap-6">
                     <time dateTime={p.date} className="pt-1 text-sm text-muted">
                       {formatDate(p.date)}
                     </time>

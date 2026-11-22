@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { formatDate, posts } from '../data/posts';
+import { formatDate, postPath, posts } from '../data/posts';
 import { Section } from './ui';
 
 const BlogPreview: React.FC = () => {
@@ -13,7 +13,7 @@ const BlogPreview: React.FC = () => {
       title="Ghi chép gần đây"
       action={
         <a
-          href="#/blog"
+          href="/blog"
           className="group inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm font-semibold hover:border-accent/50 hover:text-accent transition-colors"
         >
           Tất cả bài viết <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" />
@@ -27,7 +27,7 @@ const BlogPreview: React.FC = () => {
           {latest.map((p, i) => (
             <li key={p.slug}>
               <a
-                href={`#/blog/${p.slug}`}
+                href={postPath(p.slug)}
                 className="group flex h-full flex-col rounded-3xl border border-line bg-surface p-6 transition-all hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lg hover:shadow-black/5 sm:p-7"
               >
                 <div className="flex flex-wrap items-center gap-2">

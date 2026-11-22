@@ -3,10 +3,10 @@ import { Code2, Menu, X } from 'lucide-react';
 import { ThemeToggle } from './ui';
 
 const links = [
-  { href: '#about', label: 'Về mình' },
-  { href: '#projects', label: 'Dự án' },
-  { href: '#experience', label: 'Hành trình' },
-  { href: '#/blog', label: 'Blog' },
+  { href: '/#about', label: 'Về mình' },
+  { href: '/#projects', label: 'Dự án' },
+  { href: '/#experience', label: 'Hành trình' },
+  { href: '/blog', label: 'Blog' },
 ];
 
 /** Thanh menu trên cùng, dùng cho mọi trang. Ở trang chủ, menu trong suốt khi ở đầu trang. */
@@ -30,7 +30,7 @@ const Navbar: React.FC<{ overlay?: boolean }> = ({ overlay = false }) => {
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 sm:px-10">
-        <a href="#/" className="group flex items-center gap-2" aria-label="DEVSPRING – về trang chủ">
+        <a href="/" className="group flex items-center gap-2" aria-label="DEVSPRING – về trang chủ">
           <Code2
             size={26}
             strokeWidth={2.4}
@@ -53,7 +53,7 @@ const Navbar: React.FC<{ overlay?: boolean }> = ({ overlay = false }) => {
             ))}
           </ul>
           <a
-            href="#contact"
+            href="/#contact"
             className="ml-2 hidden rounded-full bg-ink px-4 py-2 text-sm font-medium text-paper hover:bg-ink/85 transition-colors sm:inline-block"
           >
             Nhắn cho mình
@@ -73,7 +73,7 @@ const Navbar: React.FC<{ overlay?: boolean }> = ({ overlay = false }) => {
 
       {open && (
         <ul className="mx-auto max-w-6xl space-y-1 px-6 pb-4 sm:px-10 md:hidden">
-          {[...links, { href: '#contact', label: 'Liên hệ' }].map((l) => (
+          {[...links, { href: '/#contact', label: 'Liên hệ' }].map((l) => (
             <li key={l.href}>
               <a href={l.href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-2.5 text-ink/80 hover:bg-raised">
                 {l.label}

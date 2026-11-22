@@ -2,16 +2,17 @@
  * Bot Telegram cho blog springgo.xyz:
  *   - Viết bài mới: nhắn chủ đề -> AI viết bản nháp -> duyệt -> tự đăng
  *   - Quản lý bài: /baiviet -> danh sách bài, mỗi bài có nút Xem / Sửa / Xoá
+ *   - Ảnh: gửi ảnh khi đang có bản nháp -> AI chèn ảnh vào bài; Duyệt thì bài + ảnh lên GitHub trong một commit
  *
  * Đường dẫn của Worker:
  *   POST /telegram           Telegram gọi vào đây (webhook), có kiểm tra secret
  *   GET  /setup?secret=...   Đăng ký webhook + danh sách lệnh với Telegram (chạy lại sau mỗi lần đổi lệnh)
  */
-import type { Env, StoredDraft, Turn } from './types.ts';
-import { buildMarkdown, draftFromMarkdown, formatDate, slugify, todayVN, wordCount } from './markdown.ts';
+import type { DraftImage, Env, StoredDraft, Turn } from './types.ts';
+import { buildMarkdown, bytesToBase64, draftFromMarkdown, formatDate, slugify, todayVN, wordCount } from './markdown.ts';
 import { writeDraft } from './gemini.ts';
-import { deleteFile, freeSlug, getFile, listPosts, putFile, type PostSummary } from './github.ts';
-import { clearButtons, downloadFile, sendDocument, sendText, tg, type InlineKeyboard } from './telegram.ts';
+import { commitFiles, deleteFile, freeSlug, getFile, listPosts, putFile, type PostSummary } from './github.ts';
+import { clearButtons, downloadBytes, downloadFile, sendDocument, sendText, tg, type InlineKeyboard } from './telegram.ts';
 
 const DRAFT_TTL = 60 * 60 * 24 * 7; // bản nháp giữ 7 ngày
 const LIST_TTL = 60 * 60 * 24; // danh sách bài giữ 1 ngày (để các nút trong danh sách còn dùng được)
@@ -20,6 +21,15 @@ const PAGE_SIZE = 5;
 const draftKey = (id: string) => `draft:${id}`;
 const awaitKey = (chatId: number) => `await:${chatId}`; // đang chờ anh gửi góp ý / file cho bản nháp nào
 const listKey = (chatId: number) => `list:${chatId}`;
+const lastKey = (chatId: number) => `last:${chatId}`; // bản nháp gửi gần nhất (ảnh gửi không kèm Sửa sẽ gắn vào đây)
+const imageKey = (draftId: string, n: number) => `img:${draftId}:${n}`;
+
+// Ảnh trong bài: file nằm ở public/images/blog/ của repo, trên trang là /images/blog/...
+const IMAGE_DIR = 'public/images/blog';
+const IMAGE_URL = '/images/blog';
+const MAX_IMAGES = 10;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const IMAGE_TYPES: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
 
 const HELP = [
   'Bot quản lý blog springgo.xyz.',
@@ -36,6 +46,11 @@ const HELP = [
   '• Nhắn yêu cầu (ví dụ "ngắn lại", "thêm ví dụ C#") để AI sửa,',
   '  hoặc gửi file .md anh tự sửa.',
   '• /huy: thôi không sửa nữa.',
+  '',
+  'ẢNH TRONG BÀI',
+  '• Gửi ảnh (từng ảnh một) khi đang có bản nháp: AI tự chèn vào chỗ hợp lý.',
+  '  Ghi chú thích cho ảnh để chỉ chỗ đặt, ví dụ "đặt ở phần execution plan".',
+  '• Ảnh chỉ được đưa lên trang khi bấm Duyệt.',
   '',
   '/id: xem Chat ID.',
 ].join('\n');
@@ -80,7 +95,7 @@ export default {
 
 const isAllowed = (env: Env, chatId: number) => env.ALLOWED_CHAT_ID !== '' && String(chatId) === env.ALLOWED_CHAT_ID.trim();
 
-const postUrl = (env: Env, slug: string) => `${env.SITE_URL}/#/blog/${slug}`;
+const postUrl = (env: Env, slug: string) => `${env.SITE_URL}/blog/${slug}`;
 const slugOf = (path: string) => path.split('/').pop()!.replace(/\.md$/, '');
 const typing = (env: Env, chatId: number) => tg(env, 'sendChatAction', { chat_id: chatId, action: 'typing' }).catch(() => undefined);
 
@@ -135,6 +150,16 @@ async function handleUpdate(update: any, env: Env) {
 
   // Đang chờ góp ý / file cho một bản nháp
   const waitingFor = cmd ? null : await env.DRAFTS.get(awaitKey(chatId));
+
+  const image = pickImage(msg);
+  if (image) {
+    if (msg.media_group_id) return albumNotice(env, chatId, String(msg.media_group_id));
+    const target = waitingFor ?? (await env.DRAFTS.get(lastKey(chatId)));
+    if (!target) {
+      return sendText(env, chatId, 'Ảnh cần gắn vào một bản nháp. Viết bài bằng /viet, hoặc bấm ✏️ Sửa ở bài đã đăng (/baiviet), rồi gửi lại ảnh.');
+    }
+    return attachImage(env, chatId, target, image, String(msg.caption ?? '').trim());
+  }
 
   if (msg.document) {
     if (!waitingFor) return sendText(env, chatId, 'Muốn thay nội dung bài bằng file này, hãy bấm ✏️ Sửa ở bài đó trước rồi gửi lại file.');
@@ -236,12 +261,116 @@ async function present(env: Env, stored: StoredDraft) {
     chatId,
     `${editing ? draft.slug : slugify(draft.slug || draft.title)}.md`,
     md,
-    `${editing ? 'Bản sửa' : 'Bản nháp'}: ${draft.title}\n${words} từ · khoảng ${Math.max(1, Math.round(words / 220))} phút đọc`,
+    `${editing ? 'Bản sửa' : 'Bản nháp'}: ${draft.title}\n${words} từ · khoảng ${Math.max(1, Math.round(words / 220))} phút đọc${
+      usedImages(stored).length ? ` · ${usedImages(stored).length} ảnh` : ''
+    }`,
     buttons
   );
 
   stored.messageId = sent.message_id;
   await env.DRAFTS.put(draftKey(id), JSON.stringify(stored), { expirationTtl: DRAFT_TTL });
+  await env.DRAFTS.put(lastKey(chatId), id, { expirationTtl: DRAFT_TTL });
+}
+
+/* ================================================================
+   Ảnh: gắn vào bản nháp, AI chèn vào bài; lên GitHub khi Duyệt
+   ================================================================ */
+
+type IncomingImage = { fileId: string; mime: string; size: number };
+
+/** Ảnh trong tin nhắn: ảnh thường (Telegram nén thành JPEG) hoặc gửi dạng file ảnh (giữ nguyên chất lượng). */
+function pickImage(msg: any): IncomingImage | null {
+  if (Array.isArray(msg.photo) && msg.photo.length) {
+    const largest = msg.photo[msg.photo.length - 1];
+    return { fileId: largest.file_id, mime: 'image/jpeg', size: largest.file_size ?? 0 };
+  }
+  const doc = msg.document;
+  if (doc && typeof doc.mime_type === 'string' && doc.mime_type.startsWith('image/')) {
+    return { fileId: doc.file_id, mime: doc.mime_type, size: doc.file_size ?? 0 };
+  }
+  return null;
+}
+
+/** Nhiều ảnh gửi cùng lúc đến thành nhiều tin riêng, xử lý song song sẽ ghi đè lên nhau: nhờ gửi từng ảnh. */
+async function albumNotice(env: Env, chatId: number, groupId: string) {
+  const key = `mg:${groupId}`;
+  if (await env.DRAFTS.get(key)) return;
+  await env.DRAFTS.put(key, '1', { expirationTtl: 300 });
+  return sendText(env, chatId, 'Bot chưa nhận được nhiều ảnh gửi cùng lúc. Anh gửi lại từng ảnh một nhé (đợi bot gửi bản mới rồi gửi ảnh tiếp).');
+}
+
+/** Ảnh của bản nháp mà bài vẫn còn dùng (AI có thể đã bỏ bớt khi sửa). */
+const usedImages = (stored: StoredDraft): DraftImage[] => (stored.images ?? []).filter((img) => stored.draft.content.includes(img.url));
+
+async function attachImage(env: Env, chatId: number, id: string, image: IncomingImage, caption: string) {
+  const ext = IMAGE_TYPES[image.mime];
+  if (!ext) return sendText(env, chatId, 'Chỉ nhận ảnh JPG, PNG, WEBP hoặc GIF.');
+  if (image.size > MAX_IMAGE_BYTES) return sendText(env, chatId, 'Ảnh quá lớn (tối đa 5 MB). Gửi dạng ảnh thường để Telegram tự nén.');
+
+  const stored = await loadDraft(env, id);
+  if (!stored) {
+    await env.DRAFTS.delete(awaitKey(chatId));
+    return sendText(env, chatId, 'Bản nháp gần nhất đã được xử lý hoặc hết hạn. Bấm ✏️ Sửa ở bài cần thêm ảnh (/baiviet) rồi gửi lại ảnh.');
+  }
+  const images = stored.images ?? [];
+  if (images.length >= MAX_IMAGES) return sendText(env, chatId, `Mỗi bài tối đa ${MAX_IMAGES} ảnh.`);
+
+  await env.DRAFTS.delete(awaitKey(chatId));
+  await sendText(env, chatId, `Đang chèn ảnh vào “${stored.draft.title}”…`);
+  await typing(env, chatId);
+
+  const bytes = await downloadBytes(env, image.fileId);
+  if (bytes.byteLength > MAX_IMAGE_BYTES) return sendText(env, chatId, 'Ảnh quá lớn (tối đa 5 MB).');
+
+  const n = images.length + 1;
+  const name = `${stored.id}-${n}.${ext}`;
+  const img: DraftImage = { path: `${IMAGE_DIR}/${name}`, url: `${IMAGE_URL}/${name}`, key: imageKey(stored.id, n) };
+  await env.DRAFTS.put(img.key, bytes, { expirationTtl: DRAFT_TTL });
+
+  const request = [
+    `Mình gửi kèm một ảnh (xem ảnh đính kèm), đường dẫn của ảnh trên trang là ${img.url}`,
+    'Chèn ảnh này vào bài đúng một lần, nằm riêng một dòng, ở vị trí phù hợp nhất với nội dung ảnh:',
+    `![mô tả ngắn gọn nội dung ảnh](${img.url})`,
+    caption ? `Ghi chú của mình về ảnh: ${caption}` : '',
+    'Giữ nguyên phần còn lại của bài (có thể thêm một câu dẫn tới ảnh nếu cần).',
+  ]
+    .filter(Boolean)
+    .join('\n');
+  const history: Turn[] = [...stored.history, { role: 'user', text: request }];
+  const draft = await writeDraft(env, history, [{ mimeType: image.mime, data: bytesToBase64(bytes) }]);
+
+  // AI quên chèn ảnh: tự thêm vào cuối bài để không mất ảnh
+  if (!draft.content.includes(img.url)) draft.content = `${draft.content.trim()}\n\n![${caption || 'Ảnh minh hoạ'}](${img.url})`;
+  if (stored.mode === 'edit') draft.slug = stored.draft.slug;
+
+  if (stored.messageId) await clearButtons(env, chatId, stored.messageId);
+  stored.draft = draft;
+  stored.images = [...images, img];
+  stored.history = [...history, { role: 'model', text: JSON.stringify(draft) }];
+  await present(env, stored);
+}
+
+/** Đăng / cập nhật bài: không có ảnh thì ghi một file như trước; có ảnh thì bài + ảnh trong một commit. */
+async function publish(env: Env, stored: StoredDraft, filePath: string, markdown: string, message: string) {
+  const images = usedImages(stored);
+  if (!images.length) {
+    // Lấy sha mới nhất ngay lúc ghi để không bị GitHub từ chối
+    const current = stored.mode === 'edit' ? await getFile(env, filePath) : null;
+    return putFile(env, filePath, markdown, message, current?.sha);
+  }
+  const files: { path: string; content: string | Uint8Array }[] = [{ path: filePath, content: markdown }];
+  for (const img of images) {
+    const data = await env.DRAFTS.get(img.key, 'arrayBuffer');
+    if (!data) throw new Error(`Ảnh ${img.url} đã hết hạn trong bộ nhớ tạm. Gửi lại ảnh rồi duyệt lại.`);
+    files.push({ path: img.path, content: new Uint8Array(data) });
+  }
+  await commitFiles(env, files, message);
+}
+
+/** Dọn bản nháp và ảnh tạm trong KV sau khi đăng / bỏ. */
+async function cleanupDraft(env: Env, stored: StoredDraft) {
+  await env.DRAFTS.delete(draftKey(stored.id));
+  await Promise.all((stored.images ?? []).map((img) => env.DRAFTS.delete(img.key)));
 }
 
 async function loadDraft(env: Env, id: string): Promise<StoredDraft | null> {
@@ -359,7 +488,7 @@ async function startEdit(env: Env, chatId: number, i: number) {
   return sendText(
     env,
     chatId,
-    `Sửa bài “${draft.title}”.\n\nCó 2 cách:\n• Nhắn yêu cầu để AI sửa, ví dụ: "thêm phần ví dụ C#", "sửa lỗi chính tả", "đổi tiêu đề thành …".\n• Hoặc gửi file .md anh tự sửa (bấm 📖 Xem để tải file hiện tại về).\n\nGõ /huy nếu đổi ý.`
+    `Sửa bài “${draft.title}”.\n\nCó 2 cách:\n• Nhắn yêu cầu để AI sửa, ví dụ: "thêm phần ví dụ C#", "sửa lỗi chính tả", "đổi tiêu đề thành …".\n• Hoặc gửi file .md anh tự sửa (bấm 📖 Xem để tải file hiện tại về).\n• Hoặc gửi ảnh để AI chèn vào bài.\n\nGõ /huy nếu đổi ý.`
   );
 }
 
@@ -441,17 +570,15 @@ async function onButton(cq: any, env: Env) {
     await clearButtons(env, chatId, messageId);
 
     if (stored.mode === 'edit' && stored.path) {
-      // Lấy sha mới nhất ngay lúc ghi để không bị GitHub từ chối
-      const current = await getFile(env, stored.path);
-      await putFile(env, stored.path, buildMarkdown(draft, stored.date, stored.extraMeta), `blog: cập nhật ${draft.title}`, current?.sha);
-      await env.DRAFTS.delete(draftKey(stored.id));
+      await publish(env, stored, stored.path, buildMarkdown(draft, stored.date, stored.extraMeta), `blog: cập nhật ${draft.title}`);
+      await cleanupDraft(env, stored);
       await env.DRAFTS.delete(listKey(chatId));
       return sendText(env, chatId, `Đã cập nhật “${draft.title}”.\nCloudflare đang build lại trang, khoảng 1–2 phút nữa bản mới sẽ lên tại:\n${postUrl(env, slugOf(stored.path))}`);
     }
 
     const slug = await freeSlug(env, slugify(draft.slug || draft.title));
-    await putFile(env, `${env.BLOG_DIR}/${slug}.md`, buildMarkdown(draft, stored.date), `blog: ${draft.title}`);
-    await env.DRAFTS.delete(draftKey(stored.id));
+    await publish(env, stored, `${env.BLOG_DIR}/${slug}.md`, buildMarkdown(draft, stored.date), `blog: ${draft.title}`);
+    await cleanupDraft(env, stored);
     await env.DRAFTS.delete(listKey(chatId));
     return sendText(env, chatId, `Đã đăng “${draft.title}”.\nCloudflare đang build lại trang, khoảng 1–2 phút nữa bài sẽ lên tại:\n${postUrl(env, slug)}`);
   }
@@ -462,14 +589,14 @@ async function onButton(cq: any, env: Env) {
     return sendText(
       env,
       chatId,
-      'Bạn muốn sửa gì? Nhắn yêu cầu, ví dụ: "ngắn lại còn 600 từ", "thêm ví dụ code C#", "đổi tiêu đề".\nHoặc gửi file .md đã tự sửa.\nGõ /huy nếu đổi ý.'
+      'Bạn muốn sửa gì? Nhắn yêu cầu, ví dụ: "ngắn lại còn 600 từ", "thêm ví dụ code C#", "đổi tiêu đề".\nHoặc gửi file .md đã tự sửa, hoặc gửi ảnh để chèn vào bài.\nGõ /huy nếu đổi ý.'
     );
   }
 
   if (action === 'del') {
     await answer('Đã bỏ');
     await clearButtons(env, chatId, messageId);
-    await env.DRAFTS.delete(draftKey(stored.id));
+    await cleanupDraft(env, stored);
     return sendText(env, chatId, stored.mode === 'edit' ? 'Đã bỏ bản sửa, bài trên trang giữ nguyên.' : 'Đã bỏ bản nháp.');
   }
 

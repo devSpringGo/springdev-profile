@@ -59,6 +59,14 @@ export async function downloadFile(env: Env, fileId: string): Promise<string> {
   return res.text();
 }
 
+/** Tải file nhị phân (ảnh) anh gửi lên Telegram. */
+export async function downloadBytes(env: Env, fileId: string): Promise<Uint8Array> {
+  const file = (await tg(env, 'getFile', { file_id: fileId })) as { file_path: string };
+  const res = await fetch(`https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN}/${file.file_path}`);
+  if (!res.ok) throw new Error(`Không tải được ảnh từ Telegram (${res.status}).`);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
 /** Gỡ các nút bấm khỏi một tin nhắn (khi bản nháp đã được xử lý). */
 export const clearButtons = (env: Env, chatId: number, messageId: number) =>
   tg(env, 'editMessageReplyMarkup', {

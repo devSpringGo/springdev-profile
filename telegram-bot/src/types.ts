@@ -43,4 +43,15 @@ export type StoredDraft = {
   history: Turn[];
   /** message_id của tin nhắn có nút Duyệt / Sửa / Bỏ, để gỡ nút khi đã xử lý */
   messageId?: number;
+  /** Ảnh anh gửi kèm bài: nội dung ảnh nằm trong KV, chỉ đưa lên GitHub khi Duyệt */
+  images?: DraftImage[];
+};
+
+export type DraftImage = {
+  /** Đường dẫn file trong repo, ví dụ public/images/blog/ab12cd34-1.jpg */
+  path: string;
+  /** Đường dẫn trên trang, ví dụ /images/blog/ab12cd34-1.jpg */
+  url: string;
+  /** Khoá KV chứa nội dung ảnh */
+  key: string;
 };

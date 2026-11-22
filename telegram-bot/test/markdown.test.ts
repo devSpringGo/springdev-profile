@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildMarkdown, draftFromMarkdown, formatDate, fromBase64, parseMarkdown, slugify, toBase64, todayVN } from '../src/markdown.ts';
+import { buildMarkdown, bytesToBase64, draftFromMarkdown, formatDate, fromBase64, parseMarkdown, slugify, toBase64, todayVN } from '../src/markdown.ts';
 
 test('slugify bỏ dấu tiếng Việt và ký tự đặc biệt', () => {
   assert.equal(slugify('Phân trang dữ liệu lớn: OFFSET/FETCH hay keyset?'), 'phan-trang-du-lieu-lon-offset-fetch-hay-keyset');
@@ -76,4 +76,9 @@ test('sửa bài: đọc file cũ rồi ghi lại vẫn giữ trường draft v�
   assert.equal(body, 'Nội dung mới.');
   // không bị lặp các trường chính
   assert.equal(rebuilt.match(/^title:/gm)?.length, 1);
+});
+
+test('bytesToBase64 mã hoá đúng dữ liệu nhị phân (ảnh), kể cả file lớn hơn một khối', () => {
+  const bytes = new Uint8Array(100_000).map((_, i) => (i * 37) % 256);
+  assert.deepEqual(new Uint8Array(Buffer.from(bytesToBase64(bytes), 'base64')), bytes);
 });

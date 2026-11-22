@@ -46,7 +46,7 @@ const About: React.FC = () => {
             <p>
               Thỉnh thoảng mình ghi lại những gì học được ở{' '}
               <a
-                href="#/blog"
+                href="/blog"
                 className="font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-accent hover:text-accent transition-colors"
               >
                 blog

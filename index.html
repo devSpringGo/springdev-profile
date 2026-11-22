@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nguyễn Xuân Tiến — Full-stack Developer</title>
-    <meta name="description" content="Nguyễn Xuân Tiến, Full-stack Developer (.NET, SQL Server) tại Đà Nẵng. Hồ sơ, dự án và blog kỹ thuật." />
+    <!-- Tiêu đề, mô tả, thẻ chia sẻ (Open Graph)...: do vite-plugin-blog.ts chèn vào, sửa nội dung ở lib/blog.ts → SITE -->
+    <!--seo-->
     <script>
       // Áp dụng theme đã lưu trước khi trang hiển thị để tránh nháy màu
       try {
@@ -163,6 +163,63 @@
         :root:not([data-theme="light"]) .on-photo { --muted: 184 191 203; }
       }
       :root[data-theme="dark"] .on-photo { --muted: 184 191 203; }
+
+      /* Tô màu code trong bài viết (highlight.js) — sáng: kiểu GitHub */
+      :root {
+        --hl-keyword: 207 34 46;
+        --hl-string: 10 48 105;
+        --hl-number: 5 80 174;
+        --hl-comment: 110 119 129;
+        --hl-title: 130 80 223;
+        --hl-type: 149 56 0;
+        --hl-tag: 17 99 41;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --hl-keyword: 255 123 114;
+          --hl-string: 165 214 255;
+          --hl-number: 121 192 255;
+          --hl-comment: 139 148 158;
+          --hl-title: 210 168 255;
+          --hl-type: 255 166 87;
+          --hl-tag: 126 231 135;
+        }
+      }
+      :root[data-theme="dark"] {
+        --hl-keyword: 255 123 114;
+        --hl-string: 165 214 255;
+        --hl-number: 121 192 255;
+        --hl-comment: 139 148 158;
+        --hl-title: 210 168 255;
+        --hl-type: 255 166 87;
+        --hl-tag: 126 231 135;
+      }
+      .hljs-keyword, .hljs-doctag, .hljs-template-tag, .hljs-selector-tag, .hljs-meta .hljs-keyword { color: rgb(var(--hl-keyword)); }
+      .hljs-string, .hljs-regexp, .hljs-meta .hljs-string, .hljs-char.escape_ { color: rgb(var(--hl-string)); }
+      .hljs-number, .hljs-literal, .hljs-attr, .hljs-attribute, .hljs-variable, .hljs-template-variable,
+      .hljs-meta, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id, .hljs-symbol, .hljs-operator { color: rgb(var(--hl-number)); }
+      .hljs-comment, .hljs-quote { color: rgb(var(--hl-comment)); font-style: italic; }
+      .hljs-title, .hljs-title.function_, .hljs-section { color: rgb(var(--hl-title)); }
+      .hljs-type, .hljs-built_in, .hljs-title.class_, .hljs-params .hljs-type, .hljs-variable.language_ { color: rgb(var(--hl-type)); }
+      .hljs-name, .hljs-tag .hljs-name, .hljs-bullet, .hljs-addition { color: rgb(var(--hl-tag)); }
+      .hljs-deletion { color: rgb(var(--hl-keyword)); }
+      .hljs-strong { font-weight: 600; }
+      .hljs-emphasis { font-style: italic; }
+
+      /* Nội dung bài có sẵn trong file HTML (cho Google / khi chưa chạy JavaScript) */
+      .prerendered { font-size: 1.0625rem; line-height: 1.8; color: rgb(var(--ink) / 0.8); }
+      .prerendered > * + * { margin-top: 1.25rem; }
+      .prerendered h2 { font-size: 1.5rem; font-weight: 700; color: rgb(var(--ink)); padding-top: 1.5rem; }
+      .prerendered h3 { font-size: 1.125rem; font-weight: 600; color: rgb(var(--ink)); padding-top: 0.5rem; }
+      .prerendered ul { list-style: disc; padding-left: 1.25rem; }
+      .prerendered ol { list-style: decimal; padding-left: 1.25rem; }
+      .prerendered pre { overflow-x: auto; padding: 1rem; border: 1px solid rgb(var(--line)); border-radius: 0.75rem; background: rgb(var(--raised)); font-size: 13px; }
+      .prerendered code { font-family: "JetBrains Mono", ui-monospace, monospace; }
+      .prerendered blockquote { border-left: 2px solid rgb(var(--accent)); padding-left: 1.25rem; font-style: italic; }
+      .prerendered a { color: rgb(var(--accent)); text-decoration: underline; }
+      .prerendered img { max-width: 100%; border-radius: 0.75rem; }
+      .prerendered table { width: 100%; border-collapse: collapse; }
+      .prerendered th, .prerendered td { border: 1px solid rgb(var(--line)); padding: 0.5rem 0.75rem; text-align: left; }
 
       :focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; border-radius: 4px; }
 

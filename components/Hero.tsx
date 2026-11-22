@@ -41,7 +41,7 @@ const Hero: React.FC = () => {
             Xem dự án <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
           </a>
           <a
-            href="#/blog"
+            href="/blog"
             className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/80 px-6 py-3 text-sm font-semibold backdrop-blur hover:border-muted/50 transition-colors"
           >
             Đọc blog

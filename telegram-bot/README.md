@@ -27,6 +27,7 @@ Telegram ──► Cloudflare Worker (thư mục này) ──► Gemini viết b
 | **📖 Xem** | Xem trước nội dung + tải file `.md` của bài, có nút mở bài trên web |
 | **✏️ Sửa** ở bài đã đăng | Nhắn yêu cầu để AI sửa, **hoặc gửi file `.md` anh tự sửa**. Bot gửi bản sửa kèm nút **Duyệt & cập nhật / Sửa tiếp / Bỏ**. Bài giữ nguyên đường dẫn và ngày đăng |
 | **🗑 Xoá** | Bot hỏi xác nhận, bấm **Xoá hẳn** thì bài biến mất khỏi trang sau 1–2 phút (vẫn còn trong lịch sử git) |
+| Gửi ảnh (từng ảnh một) | Ảnh được gắn vào bản nháp đang mở (sau khi bấm **✏️ Sửa**) hoặc bản nháp gửi gần nhất. AI xem ảnh rồi chèn `![mô tả](/images/blog/...)` vào chỗ hợp lý; ghi chú thích cho ảnh để chỉ chỗ đặt. Ảnh nằm tạm trong KV, khi **Duyệt** thì bài + ảnh lên GitHub trong **một commit** (thư mục `public/images/blog/`). Tối đa 10 ảnh / bài, 5 MB / ảnh. Chưa nhận album nhiều ảnh gửi cùng lúc |
 | `/huy` | Thôi sửa (sau khi lỡ bấm Sửa) |
 | `/id` | Xem Chat ID |
 

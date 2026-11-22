@@ -78,8 +78,10 @@ export const draftFromMarkdown = (raw: string, fallbackSlug: string): { draft: D
 export const wordCount = (text: string) => text.split(/\s+/).filter(Boolean).length;
 
 /** Mã hoá UTF-8 sang base64 (GitHub API yêu cầu nội dung file ở dạng base64). */
-export const toBase64 = (text: string): string => {
-  const bytes = new TextEncoder().encode(text);
+export const toBase64 = (text: string): string => bytesToBase64(new TextEncoder().encode(text));
+
+/** Mã hoá dữ liệu nhị phân (ảnh) sang base64. */
+export const bytesToBase64 = (bytes: Uint8Array): string => {
   let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) {
     bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
