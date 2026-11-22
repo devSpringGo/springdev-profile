@@ -2,7 +2,8 @@ import type { Env } from './types.ts';
 
 type Json = Record<string, unknown>;
 
-export type InlineKeyboard = { inline_keyboard: { text: string; callback_data: string }[][] };
+export type InlineButton = { text: string; callback_data: string } | { text: string; url: string };
+export type InlineKeyboard = { inline_keyboard: InlineButton[][] };
 
 async function parse(res: Response, method: string) {
   const data = (await res.json()) as { ok: boolean; result?: any; description?: string };
@@ -48,6 +49,14 @@ export async function sendDocument(
     await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendDocument`, { method: 'POST', body: form }),
     'sendDocument'
   );
+}
+
+/** Tải nội dung một file anh gửi lên Telegram (ví dụ file .md đã tự sửa). */
+export async function downloadFile(env: Env, fileId: string): Promise<string> {
+  const file = (await tg(env, 'getFile', { file_id: fileId })) as { file_path: string };
+  const res = await fetch(`https://api.telegram.org/file/bot${env.TELEGRAM_BOT_TOKEN}/${file.file_path}`);
+  if (!res.ok) throw new Error(`Không tải được file từ Telegram (${res.status}).`);
+  return res.text();
 }
 
 /** Gỡ các nút bấm khỏi một tin nhắn (khi bản nháp đã được xử lý). */

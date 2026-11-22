@@ -32,6 +32,12 @@ export type Turn = { role: 'user' | 'model'; text: string };
 export type StoredDraft = {
   id: string;
   chatId: number;
+  /** 'new': bài mới; 'edit': bản sửa của một bài đã đăng */
+  mode: 'new' | 'edit';
+  /** Với bài đang sửa: đường dẫn file trong repo, ví dụ content/blog/ten-bai.md */
+  path?: string;
+  /** Với bài đang sửa: các trường khác trong phần đầu file cũ cần giữ lại (ví dụ draft: true) */
+  extraMeta?: Record<string, string>;
   date: string; // YYYY-MM-DD
   draft: Draft;
   history: Turn[];

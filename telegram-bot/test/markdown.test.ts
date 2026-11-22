@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildMarkdown, slugify, toBase64, todayVN } from '../src/markdown.ts';
+import { buildMarkdown, draftFromMarkdown, formatDate, fromBase64, parseMarkdown, slugify, toBase64, todayVN } from '../src/markdown.ts';
 
 test('slugify bỏ dấu tiếng Việt và ký tự đặc biệt', () => {
   assert.equal(slugify('Phân trang dữ liệu lớn: OFFSET/FETCH hay keyset?'), 'phan-trang-du-lieu-lon-offset-fetch-hay-keyset');
@@ -49,4 +49,31 @@ test('buildMarkdown tạo file đúng định dạng blog', () => {
   assert.equal(meta.excerpt, 'Một câu tóm tắt có xuống dòng: vẫn phải nằm trên một dòng.');
   assert.ok(body.startsWith('Đoạn mở đầu.'), 'tiêu đề "# ..." lặp lại ở đầu bài phải bị bỏ');
   assert.ok(body.includes('## Mục 1'));
+});
+
+test('fromBase64 đọc được base64 có xuống dòng như GitHub trả về', () => {
+  const text = 'Bài viết: “Đà Nẵng” – ổn';
+  const b64 = Buffer.from(text, 'utf8').toString('base64').replace(/(.{10})/g, '$1\n');
+  assert.equal(fromBase64(b64), text);
+});
+
+test('formatDate', () => {
+  assert.equal(formatDate('2026-10-28'), '28/10/2026');
+});
+
+test('sửa bài: đọc file cũ rồi ghi lại vẫn giữ trường draft và ngày cũ', () => {
+  const original = '---\r\ntitle: Bài cũ\r\ndate: 2026-08-04\r\ntags: .NET, Kinh nghiệm\r\nexcerpt: Tóm tắt\r\ndraft: true\r\n---\r\n\r\nNội dung cũ.\r\n';
+  const { draft, meta } = draftFromMarkdown(original, 'bai-cu');
+  assert.equal(draft.title, 'Bài cũ');
+  assert.deepEqual(draft.tags, ['.NET', 'Kinh nghiệm']);
+  assert.equal(draft.content, 'Nội dung cũ.');
+  assert.equal(draft.slug, 'bai-cu');
+
+  const rebuilt = buildMarkdown({ ...draft, content: 'Nội dung mới.' }, meta.date, meta);
+  const { meta: m2, body } = parseMarkdown(rebuilt);
+  assert.equal(m2.date, '2026-08-04');
+  assert.equal(m2.draft, 'true');
+  assert.equal(body, 'Nội dung mới.');
+  // không bị lặp các trường chính
+  assert.equal(rebuilt.match(/^title:/gm)?.length, 1);
 });

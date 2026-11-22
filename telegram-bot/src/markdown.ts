@@ -17,18 +17,62 @@ export const slugify = (input: string, maxLength = 60): string => {
 export const todayVN = (now = new Date()): string =>
   new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(now);
 
+/** "2026-10-28" -> "28/10/2026" */
+export const formatDate = (iso: string): string => {
+  const [y, m, d] = iso.split('-');
+  return y && m && d ? `${d}/${m}/${y}` : iso;
+};
+
 /** Giá trị trong phần đầu file chỉ được nằm trên một dòng. */
 const oneLine = (s: string) => s.replace(/\s+/g, ' ').trim();
 
-/** Tạo nội dung file .md đúng định dạng blog đang dùng (xem data/posts.ts của trang). */
-export const buildMarkdown = (d: Draft, date: string): string => {
+const KNOWN_META = ['title', 'date', 'tags', 'excerpt'];
+
+/**
+ * Tạo nội dung file .md đúng định dạng blog đang dùng (xem data/posts.ts của trang).
+ * `extra` giữ lại các trường khác trong phần đầu file cũ (ví dụ draft: true) khi sửa bài.
+ */
+export const buildMarkdown = (d: Draft, date: string, extra: Record<string, string> = {}): string => {
   const tags = d.tags.map(oneLine).filter(Boolean).join(', ');
   const body = d.content
     .replace(/\r/g, '')
     // AI đôi khi lặp lại tiêu đề bằng "# ..." ở đầu bài: bỏ đi vì trang đã hiển thị tiêu đề
     .replace(/^#\s+.*\n+/, '')
     .trim();
-  return `---\ntitle: ${oneLine(d.title)}\ndate: ${date}\ntags: ${tags}\nexcerpt: ${oneLine(d.excerpt)}\n---\n\n${body}\n`;
+  const extraLines = Object.entries(extra)
+    .filter(([k]) => !KNOWN_META.includes(k))
+    .map(([k, v]) => `${k}: ${oneLine(v)}\n`)
+    .join('');
+  return `---\ntitle: ${oneLine(d.title)}\ndate: ${date}\ntags: ${tags}\nexcerpt: ${oneLine(d.excerpt)}\n${extraLines}---\n\n${body}\n`;
+};
+
+/** Đọc file .md của blog: phần đầu (meta) và thân bài. Cùng quy tắc với data/posts.ts của trang. */
+export const parseMarkdown = (raw: string): { meta: Record<string, string>; body: string } => {
+  const text = raw.replace(/^﻿/, '').replace(/\r/g, '');
+  const m = text.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  const meta: Record<string, string> = {};
+  if (m) {
+    for (const line of m[1].split('\n')) {
+      const i = line.indexOf(':');
+      if (i > 0) meta[line.slice(0, i).trim()] = line.slice(i + 1).trim();
+    }
+  }
+  return { meta, body: (m ? m[2] : text).trim() };
+};
+
+/** Chuyển file .md thành Draft (dùng khi sửa bài có sẵn hoặc khi anh gửi file tự sửa). */
+export const draftFromMarkdown = (raw: string, fallbackSlug: string): { draft: Draft; meta: Record<string, string> } => {
+  const { meta, body } = parseMarkdown(raw);
+  return {
+    meta,
+    draft: {
+      title: meta.title || fallbackSlug,
+      slug: fallbackSlug,
+      tags: meta.tags ? meta.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+      excerpt: meta.excerpt || '',
+      content: body,
+    },
+  };
 };
 
 export const wordCount = (text: string) => text.split(/\s+/).filter(Boolean).length;
@@ -41,4 +85,12 @@ export const toBase64 = (text: string): string => {
     bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   }
   return btoa(bin);
+};
+
+/** Giải mã base64 (GitHub trả về có xuống dòng) sang chuỗi UTF-8. */
+export const fromBase64 = (b64: string): string => {
+  const bin = atob(b64.replace(/\s/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
 };

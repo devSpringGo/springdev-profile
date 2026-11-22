@@ -23,7 +23,11 @@ Telegram ──► Cloudflare Worker (thư mục này) ──► Gemini viết b
 | Bấm **✏️ Sửa** rồi nhắn góp ý | AI viết lại cả bài theo góp ý |
 | Bấm **✅ Duyệt & đăng** | Bài được đăng, khoảng 1–2 phút sau có trên trang |
 | Bấm **❌ Bỏ** | Xoá bản nháp |
-| `/huy` | Thôi góp ý (sau khi lỡ bấm Sửa) |
+| `/baiviet` | Danh sách bài đã đăng (5 bài mỗi trang), mỗi bài có nút **📖 Xem / ✏️ Sửa / 🗑 Xoá** |
+| **📖 Xem** | Xem trước nội dung + tải file `.md` của bài, có nút mở bài trên web |
+| **✏️ Sửa** ở bài đã đăng | Nhắn yêu cầu để AI sửa, **hoặc gửi file `.md` anh tự sửa**. Bot gửi bản sửa kèm nút **Duyệt & cập nhật / Sửa tiếp / Bỏ**. Bài giữ nguyên đường dẫn và ngày đăng |
+| **🗑 Xoá** | Bot hỏi xác nhận, bấm **Xoá hẳn** thì bài biến mất khỏi trang sau 1–2 phút (vẫn còn trong lịch sử git) |
+| `/huy` | Thôi sửa (sau khi lỡ bấm Sửa) |
 | `/id` | Xem Chat ID |
 
 Bản nháp được giữ 7 ngày. Bot chỉ nghe lệnh từ đúng tài khoản Telegram của anh.
