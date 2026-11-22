@@ -1,164 +1,148 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, MapPin } from 'lucide-react';
 import { SectionId } from '../types';
-import { Cpu, Globe, Database, Layout, Terminal, Zap } from 'lucide-react';
-import { motion } from 'framer-motion';
-import TechMarquee from './TechMarquee';
-import SpotlightCard from './SpotlightCard';
+import { NOW, PROFILE, TOOLBOX } from '../data/profile';
+import { Section, Tile } from './ui';
+import { posts } from '../data/posts';
 
-const skills = [
-  { name: 'Frontend Development', icon: <Layout />, description: 'Html/Css, Boostrap, Javascript, React' },
-  { name: 'Backend Integration', icon: <Database />, description: 'ASP.NET Core, Node.js, Java, SQL Server, Firebase, MongoDB' },
-  { name: 'UI/UX Design', icon: <Globe />, description: 'Figma, Responsive Design, Photoshop' },
-  { name: 'Tools & DevOps', icon: <Terminal />, description: 'VS Studio, VS Code, GitHub' },
-];
+const strong = 'font-medium text-ink';
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0 }
+/** Giờ hiện tại ở Đà Nẵng, cập nhật mỗi 20 giây. */
+const useDaNangTime = () => {
+  const fmt = () =>
+    new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', hour12: false }).format(
+      new Date()
+    );
+  const [time, setTime] = useState(fmt);
+  useEffect(() => {
+    const t = setInterval(() => setTime(fmt()), 20000);
+    return () => clearInterval(t);
+  }, []);
+  return time;
 };
 
 const About: React.FC = () => {
+  const time = useDaNangTime();
+
   return (
-    <section id={SectionId.ABOUT} className="py-20 bg-slate-900/50 backdrop-blur-sm relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16 relative"
-        >
-          {/* Decoration: Top-left branch */}
-          <div className="absolute -top-12 -left-8 md:-left-4 opacity-70 pointer-events-none hidden sm:block">
-            <svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <g id="peach-blossom-detailed-about">
-                  <circle cx="0" cy="-5" r="3" fill="#f472b6" />
-                  <circle cx="5" cy="-2" r="3" fill="#f472b6" />
-                  <circle cx="3" cy="4" r="3" fill="#f472b6" />
-                  <circle cx="-3" cy="4" r="3" fill="#f472b6" />
-                  <circle cx="-5" cy="-2" r="3" fill="#f472b6" />
-                  <circle cx="0" cy="0" r="1.5" fill="#fef08a" />
-                </g>
-              </defs>
-              <path d="M0 0 Q 70 30, 80 100 T 150 150" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M80 100 Q 100 80, 130 70" stroke="#78350f" strokeWidth="2" strokeLinecap="round" />
-              <use href="#peach-blossom-detailed-about" x="80" y="100" transform="scale(1.4)" />
-              <use href="#peach-blossom-detailed-about" x="150" y="150" transform="scale(1.1)" />
-              <use href="#peach-blossom-detailed-about" x="130" y="70" transform="scale(1)" />
-              <use href="#peach-blossom-detailed-about" x="40" y="25" transform="scale(0.9)" />
-              <circle cx="100" cy="120" r="3.5" fill="#fbcfe8" />
-              <circle cx="160" cy="80" r="2.5" fill="#fbcfe8" />
-            </svg>
+    <Section id={SectionId.ABOUT} eyebrow="Về mình" title="Một chút về mình">
+      <div className="grid gap-4 lg:grid-cols-3">
+        {/* Câu chuyện */}
+        <Tile className="flex flex-col justify-between gap-8 lg:col-span-2 lg:row-span-2">
+          <div className="space-y-4 text-[1.0625rem] leading-relaxed text-muted">
+            <p>
+              Mình là Tiến, lập trình viên ở Đà Nẵng. Hơn hai năm nay, phần lớn những gì mình làm là{' '}
+              <span className={strong}>phần mềm nội bộ cho doanh nghiệp</span>: quản lý hợp đồng, nghiệp vụ kế
+              toán, các module vận hành. Người dùng là chính đồng nghiệp trong công ty, nên mình được nghe phản
+              hồi rất thật và rất nhanh.
+            </p>
+            <p>
+              Mình bắt đầu với WinForms, chuyển sang web nội bộ, và giờ thì tự tay làm từ đầu đến cuối. Thứ
+              mình để tâm nhất là <span className={strong}>dữ liệu đúng</span>,{' '}
+              <span className={strong}>truy vấn chạy nhanh</span> và{' '}
+              <span className={strong}>màn hình đủ rõ ràng</span> để người nhập liệu hằng ngày không phải nghĩ
+              nhiều.
+            </p>
+            <p>
+              Thỉnh thoảng mình ghi lại những gì học được ở{' '}
+              <a
+                href="#/blog"
+                className="font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-accent hover:text-accent transition-colors"
+              >
+                blog
+              </a>
+              .
+            </p>
           </div>
 
-          {/* Decoration: Bottom-right branch */}
-          <div className="absolute -bottom-16 -right-8 md:-right-4 opacity-70 pointer-events-none hidden sm:block">
-            <svg width="250" height="200" viewBox="0 0 250 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M250 200 Q 180 170, 170 100 T 100 50" stroke="#78350f" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M170 100 Q 150 120, 120 130" stroke="#78350f" strokeWidth="2" strokeLinecap="round" />
-              {/* Re-using the same ID from the first SVG is valid within the same document */}
-              <use href="#peach-blossom-detailed-about" x="170" y="100" transform="scale(1.4)" />
-              <use href="#peach-blossom-detailed-about" x="100" y="50" transform="scale(1.1)" />
-              <use href="#peach-blossom-detailed-about" x="120" y="130" transform="scale(1)" />
-              <use href="#peach-blossom-detailed-about" x="200" y="170" transform="scale(0.9)" />
-              <circle cx="150" cy="80" r="3.5" fill="#fbcfe8" />
-              <circle cx="90" cy="110" r="2.5" fill="#fbcfe8" />
-            </svg>
-          </div>
+          <dl className="grid grid-cols-3 gap-4 border-t border-line pt-6">
+            {[
+              { value: '2023', label: 'Năm bắt đầu đi làm' },
+              { value: '3', label: 'Công ty đã gắn bó' },
+              { value: String(posts.length), label: 'Bài viết trên blog' },
+            ].map((f) => (
+              <div key={f.label}>
+                <dd className="text-3xl font-bold tracking-tight">{f.value}</dd>
+                <dt className="mt-1 text-sm text-muted">{f.label}</dt>
+              </div>
+            ))}
+          </dl>
+        </Tile>
 
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Về bản thân tôi</h2>
-          <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-          <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
-            Tôi là một lập trình viên đam mê công nghệ, luôn tìm kiếm giải pháp tối ưu cho mọi vấn đề.
-            Với nền tảng vững chắc về Frontend và kinh nghiệm làm việc với Backend, tôi có thể đảm nhận nhiều vai trò trong dự án.
+        {/* Bây giờ */}
+        <Tile>
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="font-semibold">Bây giờ</h3>
+            <p className="text-xs text-muted">{NOW.updated}</p>
+          </div>
+          <dl className="mt-4 space-y-3 text-sm">
+            {NOW.items.map((it) => (
+              <div key={it.label}>
+                <dt className="font-medium text-accent">{it.label}</dt>
+                <dd className="mt-0.5 leading-relaxed text-ink/80">{it.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </Tile>
+
+        {/* Đà Nẵng */}
+        <Tile className="relative overflow-hidden pb-14 sm:pb-16">
+          <p className="flex items-center gap-1.5 text-sm text-muted">
+            <MapPin size={15} className="text-accent" /> {PROFILE.location}
           </p>
-        </motion.div>
+          <p className="mt-3 font-mono text-5xl font-medium tracking-tight">{time}</p>
+          <p className="mt-1 text-sm text-muted">Giờ hiện tại ở chỗ mình (GMT+7)</p>
+          {/* Dải núi nhỏ trang trí */}
+          <svg viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-12 w-full">
+            <path d="M0 60 L0 38 C 30 22, 55 30, 80 20 S 130 8, 160 24 S 220 36, 250 18 S 290 26, 300 22 L300 60 Z" style={{ fill: 'rgb(var(--accent) / 0.08)' }} />
+            <path d="M0 60 L0 48 C 40 36, 80 46, 120 38 S 200 30, 240 42 S 285 40, 300 44 L300 60 Z" style={{ fill: 'rgb(var(--accent) / 0.12)' }} />
+          </svg>
+        </Tile>
 
-        {/* Infinite Marquee */}
-        <div className="mb-16">
-          <TechMarquee />
-        </div>
-
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
-        >
-          {skills.map((skill, index) => (
-            <motion.div key={index} variants={item} className="h-full">
-              <SpotlightCard className="p-6 h-full flex flex-col items-start bg-slate-800/50 border-slate-700">
-                <div className="w-12 h-12 bg-slate-700/50 rounded-lg flex items-center justify-center text-primary mb-4 ring-1 ring-white/10">
-                  {React.cloneElement(skill.icon as React.ReactElement, { size: 24 })}
-                </div>
-                <h3 className="text-xl font-semibold text-white mb-2">{skill.name}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  {skill.description}
+        {/* Đồ nghề */}
+        <Tile className="lg:col-span-2">
+          <h3 className="font-semibold">Đồ nghề</h3>
+          <p className="mt-1 text-sm text-muted">Những công cụ mình dùng, xếp theo mức độ quen tay.</p>
+          <div className="mt-5 space-y-4">
+            {TOOLBOX.map((g, i) => (
+              <div key={g.group} className="grid gap-2 sm:grid-cols-[11rem_1fr] sm:gap-4">
+                <p className="flex items-center gap-2 pt-1 text-sm font-medium" title={g.note}>
+                  <span aria-hidden="true" className="inline-flex gap-0.5">
+                    {TOOLBOX.map((_, j) => (
+                      <span key={j} className={`h-2.5 w-1 rounded-full ${j < TOOLBOX.length - i ? 'bg-accent' : 'bg-line'}`} />
+                    ))}
+                  </span>
+                  {g.group}
                 </p>
-              </SpotlightCard>
-            </motion.div>
-          ))}
-        </motion.div>
+                <ul className="flex flex-wrap content-start items-start gap-1.5">
+                  {g.items.map((it) => (
+                    <li
+                      key={it}
+                      className={`rounded-md border px-2 py-1 text-xs ${
+                        i === 0 ? 'border-accent/30 bg-accent/10 font-medium text-accent' : 'border-line bg-paper text-ink/80'
+                      }`}
+                    >
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </Tile>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mt-16 bg-slate-800 rounded-2xl p-8 lg:p-12 border border-slate-700 flex flex-col lg:flex-row items-center gap-10 shadow-2xl relative"
+        {/* Lời mời liên hệ */}
+        <a
+          href={`#${SectionId.CONTACT}`}
+          className="group flex flex-col justify-between rounded-3xl bg-accent p-6 text-surface transition-transform hover:-translate-y-0.5 sm:p-7"
         >
-          {/* Decorative background element for the card */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10"></div>
-
-          <div className="flex-1">
-            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-              <Zap className="text-yellow-400" /> Triết lý làm việc
-            </h3>
-
-            <p className="text-gray-300 mb-4 text-left lg:text-justify">
-              "Code sạch, dễ bảo trì và tối ưu hiệu suất là ưu tiên hàng đầu."
-            </p>
-
-            <p className="text-gray-400 text-left lg:text-justify leading-relaxed text-balance">
-              Trong 2 năm qua, tôi đã tham gia phát triển hơn 10 dự án lớn nhỏ, từ landing page đơn giản
-              đến các hệ thống quản lý phức tạp. Tôi luôn chủ động cập nhật các công nghệ mới như
-              AI integration để mang lại giá trị tốt nhất cho sản phẩm.
-            </p>
-          </div>
-
-          <div className="flex-1 w-full grid grid-cols-2 gap-4">
-            <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
-              <span className="block text-3xl font-bold text-primary">2+</span>
-              <span className="text-sm text-gray-400">Năm kinh nghiệm</span>
-            </div>
-            <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
-              <span className="block text-3xl font-bold text-secondary">5</span>
-              <span className="text-sm text-gray-400">Dự án hoàn thành</span>
-            </div>
-            <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
-              <span className="block text-3xl font-bold text-green-500">3+</span>
-              <span className="text-sm text-gray-400">Công nghệ sử dụng</span>
-            </div>
-            <div className="bg-slate-900 p-4 rounded-lg text-center hover:scale-105 transition-transform duration-300 cursor-default border border-slate-800 hover:border-slate-600">
-              <span className="block text-3xl font-bold text-orange-500">100%</span>
-              <span className="text-sm text-gray-400">Hoàn thành nhiệm vụ</span>
-            </div>
-          </div>
-        </motion.div>
+          <p className="text-2xl font-bold leading-snug tracking-tight">Có việc cần làm, hay muốn trao đổi chuyện nghề?</p>
+          <p className="mt-8 inline-flex items-center gap-2 font-semibold">
+            Nhắn cho mình <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+          </p>
+        </a>
       </div>
-    </section>
+    </Section>
   );
 };
 

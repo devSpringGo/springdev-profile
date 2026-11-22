@@ -1,205 +1,207 @@
-// import React from 'react';
-// import { SectionId, Project } from '../types';
-// import { ExternalLink, Github } from 'lucide-react';
-// import { motion } from 'framer-motion';
-// import TiltCard from './TiltCard';
-
-// const projectList: Project[] = [
-//   {
-//     id: 1,
-//     title: 'E-commerce Dashboard',
-//     description: 'Hệ thống quản lý bán hàng toàn diện với thống kê doanh thu thời gian thực, quản lý đơn hàng và kho hàng.',
-//     techStack: ['React', 'TypeScript', 'Tailwind', 'Recharts'],
-//     imageUrl: 'https://picsum.photos/600/400?random=1',
-//     demoUrl: '#',
-//     repoUrl: '#'
-//   },
-//   {
-//     id: 2,
-//     title: 'AI Content Generator',
-//     description: 'Ứng dụng tích hợp Gemini API để tự động tạo nội dung marketing, blog post và email cho doanh nghiệp.',
-//     techStack: ['Next.js', 'OpenAI API', 'PostgreSQL'],
-//     imageUrl: 'https://picsum.photos/600/400?random=2',
-//     demoUrl: '#',
-//     repoUrl: '#'
-//   },
-//   {
-//     id: 3,
-//     title: 'Task Management App',
-//     description: 'Ứng dụng quản lý công việc cá nhân và đội nhóm theo mô hình Kanban, hỗ trợ kéo thả và real-time update.',
-//     techStack: ['React', 'Firebase', 'DnD Kit'],
-//     imageUrl: 'https://picsum.photos/600/400?random=3',
-//     demoUrl: '#',
-//     repoUrl: '#'
-//   },
-// ];
-
-// const container = {
-//     hidden: { opacity: 0 },
-//     show: {
-//       opacity: 1,
-//       transition: {
-//         staggerChildren: 0.2
-//       }
-//     }
-//   };
-  
-//   const item = {
-//     hidden: { opacity: 0, y: 50 },
-//     show: { opacity: 1, y: 0 }
-//   };
-
-// const Projects: React.FC = () => {
-//   return (
-//     <section id={SectionId.PROJECTS} className="py-20 bg-slate-900/50 backdrop-blur-sm relative perspective-1000">
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//         <motion.div 
-//           initial={{ opacity: 0, y: 20 }}
-//           whileInView={{ opacity: 1, y: 0 }}
-//           viewport={{ once: true }}
-//           className="text-center mb-16"
-//         >
-//           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Dự Án Nổi Bật</h2>
-//           <div className="w-20 h-1 bg-primary mx-auto rounded-full"></div>
-//           <p className="mt-4 text-gray-400">Những sản phẩm tôi đã xây dựng bằng tâm huyết và kỹ năng.</p>
-//         </motion.div>
-
-//         <motion.div 
-//             variants={container}
-//             initial="hidden"
-//             whileInView="show"
-//             viewport={{ once: true }}
-//             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-//         >
-//           {projectList.map((project) => (
-//             <motion.div key={project.id} variants={item} className="h-full">
-//               <TiltCard className="h-full">
-//                 <div 
-//                     className="bg-slate-800 rounded-xl overflow-hidden border border-slate-700 h-full flex flex-col group relative z-10"
-//                 >
-//                   <div className="relative h-48 overflow-hidden transform-style-3d translate-z-10">
-//                     <img 
-//                       src={project.imageUrl} 
-//                       alt={project.title} 
-//                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-//                     />
-//                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-//                       <a href={project.demoUrl} className="p-2 bg-primary rounded-full text-white hover:bg-indigo-600 transition-colors transform hover:scale-110" title="Live Demo">
-//                         <ExternalLink size={20} />
-//                       </a>
-//                       <a href={project.repoUrl} className="p-2 bg-slate-700 rounded-full text-white hover:bg-slate-600 transition-colors transform hover:scale-110" title="Github Code">
-//                         <Github size={20} />
-//                       </a>
-//                     </div>
-//                   </div>
-                  
-//                   <div className="p-6 flex flex-col flex-grow transform-style-3d translate-z-10 bg-slate-800">
-//                     <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
-//                     <p className="text-gray-400 text-sm mb-4 flex-grow line-clamp-3">
-//                       {project.description}
-//                     </p>
-//                     <div className="flex flex-wrap gap-2 mt-auto">
-//                       {project.techStack.map((tech, idx) => (
-//                         <span key={idx} className="px-2 py-1 bg-slate-700 text-xs font-medium text-primary rounded border border-slate-600 shadow-sm">
-//                           {tech}
-//                         </span>
-//                       ))}
-//                     </div>
-//                   </div>
-//                 </div>
-//               </TiltCard>
-//             </motion.div>
-//           ))}
-//         </motion.div>
-        
-//         <div className="text-center mt-12">
-//            <button className="px-6 py-2 border border-primary text-primary hover:bg-primary hover:text-white transition-all rounded-lg text-sm font-semibold uppercase tracking-wider hover:shadow-[0_0_15px_rgba(99,102,241,0.5)]">
-//               Xem tất cả dự án trên Github
-//            </button>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Projects;
-//-----------------
 import React from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { SectionId } from '../types';
-import { Hammer } from 'lucide-react';
-import { motion } from 'framer-motion';
-import TiltCard from './TiltCard';
+import { WORKS, Work } from '../data/profile';
+import { Section, TagList } from './ui';
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2 }
+/* ---------- Hình minh hoạ thu nhỏ cho từng loại dự án (vẽ bằng CSS) ---------- */
+
+const Bar: React.FC<{ w: string; tone?: 'line' | 'accent' | 'ink'; h?: string }> = ({ w, tone = 'line', h = 'h-1.5' }) => (
+  <div
+    className={`${h} rounded-full ${tone === 'accent' ? 'bg-accent/70' : tone === 'ink' ? 'bg-ink/25' : 'bg-line'}`}
+    style={{ width: w }}
+  />
+);
+
+const Frame: React.FC<{ children: React.ReactNode; chrome?: 'dots' | 'classic' | 'browser' }> = ({
+  children,
+  chrome = 'dots',
+}) => (
+  <div className="absolute inset-x-6 bottom-0 top-6 overflow-hidden rounded-t-lg border border-b-0 border-line bg-surface shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
+    {chrome === 'classic' ? (
+      <div className="flex h-5 items-center justify-between bg-accent/75 px-2">
+        <Bar w="38%" tone="ink" h="h-1" />
+        <div className="flex gap-1">
+          {[0, 1, 2].map((i) => (
+            <span key={i} className="h-2 w-2 rounded-[2px] bg-surface/80" />
+          ))}
+        </div>
+      </div>
+    ) : (
+      <div className="flex h-5 items-center gap-1 border-b border-line px-2">
+        {[0, 1, 2].map((i) => (
+          <span key={i} className="h-1.5 w-1.5 rounded-full bg-line" />
+        ))}
+        {chrome === 'browser' && <span className="ml-2 h-2.5 w-1/2 rounded-full bg-raised" />}
+      </div>
+    )}
+    <div className="p-3">{children}</div>
+  </div>
+);
+
+const Cover: React.FC<{ type: Work['cover'] }> = ({ type }) => {
+  switch (type) {
+    case 'modules':
+      return (
+        <Frame>
+          <div className="flex gap-3">
+            <div className="w-1/5 space-y-2 border-r border-line pr-3">
+              <Bar w="100%" tone="accent" />
+              <Bar w="80%" />
+              <Bar w="90%" />
+              <Bar w="70%" />
+            </div>
+            <div className="grid flex-1 grid-cols-3 gap-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="space-y-1.5 rounded-md border border-line p-2">
+                  <span className={`block h-3 w-3 rounded ${i % 3 === 0 ? 'bg-accent/60' : 'bg-raised'}`} />
+                  <Bar w="80%" />
+                  <Bar w="55%" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </Frame>
+      );
+    case 'contract':
+      return (
+        <Frame>
+          <div className="mx-auto w-4/5 space-y-1.5">
+            <div className="mx-auto"><Bar w="45%" tone="ink" h="h-2" /></div>
+            <Bar w="100%" />
+            <Bar w="94%" />
+            <Bar w="60%" />
+            <div className="flex items-end justify-between pt-1">
+              <Bar w="30%" />
+              <svg viewBox="0 0 60 18" className="h-4 w-14 text-accent" fill="none" aria-hidden="true">
+                <path d="M2 14 C 10 2, 14 18, 22 8 S 34 4, 38 12 S 50 6, 58 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+            </div>
+          </div>
+        </Frame>
+      );
+    case 'ledger':
+      return (
+        <Frame>
+          <div className="flex gap-4">
+            <div className="flex-1 space-y-1.5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className={`flex items-center gap-2 rounded px-1.5 py-1 ${i === 0 ? 'bg-raised' : ''}`}>
+                  <Bar w="30%" tone={i === 0 ? 'ink' : 'line'} />
+                  <Bar w="25%" />
+                  <div className="ml-auto"><Bar w="2.2rem" tone={i === 0 ? 'ink' : i === 3 ? 'accent' : 'line'} /></div>
+                </div>
+              ))}
+            </div>
+            <div className="flex w-1/4 items-end gap-1.5 border-b border-l border-line pb-0.5 pl-1.5">
+              {[45, 70, 55, 85].map((h, i) => (
+                <span key={i} className={`flex-1 rounded-t-sm ${i === 3 ? 'bg-accent/70' : 'bg-line'}`} style={{ height: `${h}%` }} />
+              ))}
+            </div>
+          </div>
+        </Frame>
+      );
+    case 'desktop':
+      return (
+        <Frame chrome="classic">
+          <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2">
+            {[0, 1, 2].map((i) => (
+              <React.Fragment key={i}>
+                <Bar w="2.5rem" />
+                <div className="h-3.5 rounded-sm border border-line bg-paper/60" />
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="mt-3 flex justify-end gap-2">
+            <span className="h-4 w-12 rounded-sm border border-line" />
+            <span className="h-4 w-12 rounded-sm bg-accent/70" />
+          </div>
+        </Frame>
+      );
+    case 'web':
+    default:
+      return (
+        <Frame chrome="browser">
+          <div className="flex gap-3">
+            <span className="h-8 w-8 shrink-0 rounded-full bg-accent/50" />
+            <div className="flex-1 space-y-1.5 pt-0.5">
+              <Bar w="55%" tone="ink" h="h-2" />
+              <Bar w="80%" />
+              <Bar w="70%" />
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-6 rounded border border-line" />
+            ))}
+          </div>
+        </Frame>
+      );
   }
 };
 
-const item = {
-  hidden: { opacity: 0, y: 50 },
-  show: { opacity: 1, y: 0 }
+/* ---------- Thẻ dự án ---------- */
+
+const Card: React.FC<{ w: Work; featured?: boolean }> = ({ w, featured }) => {
+  const body = (
+    <>
+      <div
+        className={`relative overflow-hidden bg-raised/70 bg-[radial-gradient(rgb(var(--ink)/0.07)_1px,transparent_1px)] [background-size:14px_14px] ${
+          featured ? 'h-56 border-b border-line md:h-auto md:min-h-[17rem] md:w-3/5 md:border-b-0 md:border-r' : 'h-40 border-b border-line'
+        }`}
+      >
+        <Cover type={w.cover} />
+      </div>
+      <div className={`flex flex-1 flex-col ${featured ? 'p-6 sm:p-8 md:justify-center' : 'p-5'}`}>
+        {featured && (
+          <span className="mb-3 w-fit rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent">Đang làm</span>
+        )}
+        <p className="text-xs font-medium uppercase tracking-wide text-muted">{w.org}</p>
+        <h3
+          className={`mt-1.5 flex items-center gap-1.5 font-semibold leading-snug group-hover:text-accent transition-colors ${
+            featured ? 'text-2xl font-bold tracking-tight' : ''
+          }`}
+        >
+          {w.title}
+          {w.url && <ArrowUpRight size={16} className="shrink-0" aria-hidden="true" />}
+        </h3>
+        <p className={`mt-2 flex-1 leading-relaxed text-muted ${featured ? 'md:flex-none' : 'text-sm'}`}>{w.description}</p>
+        <TagList items={w.stack} className="mt-4" />
+      </div>
+    </>
+  );
+
+  const cls = `group flex h-full overflow-hidden rounded-3xl border border-line bg-surface transition-all duration-300 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lg hover:shadow-black/5 ${
+    featured ? 'flex-col md:flex-row' : 'flex-col'
+  }`;
+
+  return w.url ? (
+    <a href={w.url} target="_blank" rel="noreferrer" className={cls}>
+      {body}
+    </a>
+  ) : (
+    <div className={cls}>{body}</div>
+  );
 };
 
 const Projects: React.FC = () => {
+  const [featured, ...rest] = WORKS;
   return (
-    <section
+    <Section
       id={SectionId.PROJECTS}
-      className="py-20 bg-slate-900/50 backdrop-blur-sm relative perspective-1000"
+      eyebrow="Dự án"
+      title="Những thứ mình đã làm"
+      intro="Phần lớn là phần mềm nội bộ nên không có bản demo công khai. Nếu bạn tò mò, cứ hỏi, mình rất sẵn lòng kể chi tiết."
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Dự Án
-          </h2>
-          <div className="w-20 h-1 bg-primary mx-auto rounded-full" />
-          <p className="mt-4 text-gray-400">
-            Các dự án đang được hoàn thiện và sẽ sớm được cập nhật.
-          </p>
-        </motion.div>
-
-        {/* Placeholder Card */}
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-          className="flex justify-center"
-        >
-          <motion.div variants={item} className="w-full max-w-md">
-            <TiltCard>
-              <div className="bg-slate-800 border border-slate-700 rounded-xl p-10 text-center flex flex-col items-center gap-4 hover:border-primary/50 transition">
-                <div className="w-16 h-16 flex items-center justify-center rounded-full bg-primary/10 text-primary shadow-[0_0_20px_rgba(99,102,241,0.4)]">
-                  <Hammer size={32} />
-                </div>
-
-                <h3 className="text-xl font-bold text-white">
-                  Dự án đang cập nhật
-                </h3>
-
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Hiện tại tôi đang hoàn thiện và tối ưu các dự án cá nhân cũng như
-                  dự án thực tế. Nội dung sẽ được cập nhật trong thời gian sớm nhất.
-                </p>
-
-                <span className="mt-4 px-4 py-1 text-xs font-semibold uppercase tracking-wider
-                  text-primary border border-primary/40 rounded-full">
-                  Coming Soon
-                </span>
-              </div>
-            </TiltCard>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
+      {featured && <Card w={featured} featured />}
+      <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {rest.map((w) => (
+          <li key={w.title}>
+            <Card w={w} />
+          </li>
+        ))}
+      </ul>
+    </Section>
   );
 };
 

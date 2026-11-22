@@ -1,126 +1,179 @@
 <!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SpringDev - Xuân Dev</title>
+    <title>Nguyễn Xuân Tiến — Full-stack Developer</title>
+    <meta name="description" content="Nguyễn Xuân Tiến, Full-stack Developer (.NET, SQL Server) tại Đà Nẵng. Hồ sơ, dự án và blog kỹ thuật." />
+    <script>
+      // Áp dụng theme đã lưu trước khi trang hiển thị để tránh nháy màu
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
-            container: {
-              center: true,
-              padding: '1rem',
-            },
             fontFamily: {
-              sans: ['Inter', 'sans-serif'],
+              sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
             },
             colors: {
-              primary: '#4f46e5', // Slightly deeper Indigo
-              secondary: '#8b5cf6', // Softer purple
-              accent: '#06b6d4', // Teal accent
-              muted: '#94a3b8',
-              dark: '#071026', // deeper dark
+              paper: 'rgb(var(--paper) / <alpha-value>)',
+              surface: 'rgb(var(--surface) / <alpha-value>)',
+              raised: 'rgb(var(--raised) / <alpha-value>)',
+              ink: 'rgb(var(--ink) / <alpha-value>)',
+              muted: 'rgb(var(--muted) / <alpha-value>)',
+              line: 'rgb(var(--line) / <alpha-value>)',
+              accent: 'rgb(var(--accent) / <alpha-value>)',
+              primary: 'rgb(var(--accent) / <alpha-value>)',
             },
-            animation: {
-              'blob': 'blob 7s infinite',
-              'scroll': 'scroll 40s linear infinite',
-            },
-            keyframes: {
-              blob: {
-                '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                '100%': { transform: 'translate(0px, 0px) scale(1)' },
-              },
-              scroll: {
-                '0%': { transform: 'translateX(0)' },
-                '100%': { transform: 'translateX(-50%)' },
-              }
-            }
-          }
-        }
-      }
+          },
+        },
+      };
     </script>
     <style>
-      body {
-        background-color: #0f172a;
-        color: #e2e8f0;
-        cursor: none; /* Hide default cursor for custom one */
-      }
       :root {
-        --radius: 12px;
+        --paper: 249 250 251;
+        --surface: 255 255 255;
+        --raised: 241 243 246;
+        --ink: 17 24 39;
+        --muted: 95 104 118;
+        --line: 228 231 236;
+        --accent: 29 78 216;
+        color-scheme: light;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --paper: 11 14 19;
+          --surface: 17 21 28;
+          --raised: 25 30 39;
+          --ink: 233 236 241;
+          --muted: 148 157 171;
+          --line: 36 42 53;
+          --accent: 120 164 255;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --paper: 11 14 19;
+        --surface: 17 21 28;
+        --raised: 25 30 39;
+        --ink: 233 236 241;
+        --muted: 148 157 171;
+        --line: 36 42 53;
+        --accent: 120 164 255;
+        color-scheme: dark;
+      }
+
+      /* Màu tranh phong cảnh nền — sáng: bình minh */
+      :root {
+        --sky-top: 214 228 246;
+        --sky-mid: 236 238 247;
+        --sky-horizon: 253 232 214;
+        --sun: 255 238 218;
+        --sun-glow: 255 196 150;
+        --mtn-far: 208 216 234;
+        --mtn-mid: 188 200 224;
+        --mtn-near: 168 184 213;
+        --mist: 250 238 230;
+        --sea-top: 224 230 243;
+        --sea-bottom: 198 211 233;
+        --shimmer: 255 255 255;
+        --star: 255 255 255;
+        --star-opacity: 0;
+      }
+      /* Tối: đêm trăng */
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --sky-top: 7 10 20;
+          --sky-mid: 14 20 38;
+          --sky-horizon: 30 38 68;
+          --sun: 232 237 248;
+          --sun-glow: 140 168 228;
+          --mtn-far: 30 39 66;
+          --mtn-mid: 21 28 49;
+          --mtn-near: 12 16 29;
+          --mist: 42 52 86;
+          --sea-top: 22 30 54;
+          --sea-bottom: 10 14 26;
+          --shimmer: 190 205 240;
+          --star: 255 255 255;
+          --star-opacity: 1;
+        }
+      }
+      :root[data-theme="dark"] {
+        --sky-top: 7 10 20;
+        --sky-mid: 14 20 38;
+        --sky-horizon: 30 38 68;
+        --sun: 232 237 248;
+        --sun-glow: 140 168 228;
+        --mtn-far: 30 39 66;
+        --mtn-mid: 21 28 49;
+        --mtn-near: 12 16 29;
+        --mist: 42 52 86;
+        --sea-top: 22 30 54;
+        --sea-bottom: 10 14 26;
+        --shimmer: 190 205 240;
+        --star: 255 255 255;
+        --star-opacity: 1;
       }
       html, body {
+        background-color: rgb(var(--paper));
+        color: rgb(var(--ink));
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
-      h1, h2, h3 {
-        letter-spacing: -0.01em;
-        line-height: 1.05;
-      }
-      p { line-height: 1.6; color: #cbd5e1; }
-      /* Button and input base styles to make UI consistent (pure CSS fallback) */
-      .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        border-radius: var(--radius);
-        font-weight: 600;
-        color: #ffffff;
-        background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
-        box-shadow: 0 10px 25px rgba(79,70,229,0.12);
-        transition: transform 180ms ease, opacity 160ms ease;
-      }
-      .btn-primary:hover { transform: translateY(-3px); }
-      .form-input {
+      html { scroll-behavior: smooth; }
+      ::selection { background: rgb(var(--accent) / 0.18); }
+
+      .field {
         width: 100%;
-        background: #0b1220;
-        border: 1px solid #334155;
-        border-radius: 10px;
-        padding: 0.75rem 1rem;
-        color: #e6eef8;
+        background: rgb(var(--paper));
+        border: 1px solid rgb(var(--line));
+        border-radius: 8px;
+        padding: 0.625rem 0.875rem;
+        color: rgb(var(--ink));
+        font-size: 0.9375rem;
         outline: none;
-        transition: box-shadow 160ms ease, border-color 160ms ease;
+        transition: border-color 150ms ease, box-shadow 150ms ease;
       }
-      .form-input:focus {
-        box-shadow: 0 6px 18px rgba(79,70,229,0.12);
-        border-color: #6366f1;
+      .field::placeholder { color: rgb(var(--muted) / 0.7); }
+      .field:focus { border-color: rgb(var(--accent)); box-shadow: 0 0 0 3px rgb(var(--accent) / 0.15); }
+
+      /* Khi có ảnh nền: quầng sáng nhẹ quanh chữ để tách chữ khỏi ảnh */
+      .on-photo {
+        text-shadow:
+          0 0 1px rgb(var(--paper) / 0.9),
+          0 0 6px rgb(var(--paper) / 0.85),
+          0 0 16px rgb(var(--paper) / 0.7);
       }
-      /* Fallback for touch devices */
-      @media (hover: none) and (pointer: coarse) {
-        body {
-          cursor: auto;
-        }
+      .on-photo pre, .on-photo code, .on-photo input, .on-photo textarea, .on-photo button,
+      .on-photo [class*="bg-ink"], .on-photo [class*="bg-surface"], .on-photo [class*="bg-accent"],
+      .on-photo [class*="bg-raised"], .on-photo [class*="bg-emerald"] { text-shadow: none; }
+      /* Chữ phụ đậm hơn một chút khi nằm trên ảnh */
+      .on-photo { --muted: 68 76 90; }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .on-photo { --muted: 184 191 203; }
       }
-      
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #1e293b; 
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #475569; 
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #6366f1; 
-      }
-      .glass-panel {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+      :root[data-theme="dark"] .on-photo { --muted: 184 191 203; }
+
+      :focus-visible { outline: 2px solid rgb(var(--accent)); outline-offset: 2px; border-radius: 4px; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

@@ -1,39 +1,74 @@
-import React from 'react';
-import Navbar from './components/Navbar';
+import React, { useEffect } from 'react';
+import { routeKey, useRoute } from './lib/router';
 import Hero from './components/Hero';
 import About from './components/About';
 import Experience from './components/Experience';
 import Projects from './components/Projects';
+import BlogPreview from './components/BlogPreview';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import LuckyMoney from './components/LuckyMoney'; // mới
+import Navbar from './components/Navbar';
+import BlogList from './components/blog/BlogList';
+import BlogPost from './components/blog/BlogPost';
 import AIChat from './components/AIChat';
-import ParticleBackground from './components/ParticleBackground';
-import AudioPlayer from './components/AudioPlayer';
-import CustomCursor from './components/CustomCursor';
-import CommandPalette from './components/CommandPalette';
-import ScrollToTop from './components/ScrollToTop';
+import Background from './components/Background';
+
+/** Trang chủ: màn hình mở đầu trên nền phong cảnh, nội dung nằm trên một lớp nền trượt lên. */
+const Home: React.FC = () => (
+  <>
+    <Navbar overlay />
+    <Hero />
+    <main className="relative rounded-t-[2.5rem] border-t border-line bg-paper shadow-[0_-24px_60px_-30px_rgb(0_0_0/0.25)]">
+      <About />
+      <Projects />
+      <Experience />
+      <BlogPreview />
+      <Contact />
+      <div className="mx-auto max-w-6xl border-t border-line px-6 py-10 sm:px-10">
+        <Footer />
+      </div>
+    </main>
+  </>
+);
 
 function App() {
-  return (
-    <div className="bg-dark text-slate-200 min-h-screen font-sans selection:bg-primary selection:text-white relative cursor-none">
-      <CustomCursor />
-      <ParticleBackground />
-      <CommandPalette />
-      <Navbar />
-      <main className="relative z-10">
-        <Hero />
-        {/* <LuckyMoney />    */}
+  const route = useRoute();
+  const key = routeKey(route);
 
-        <About />
-        <Experience />
-        <Projects />
-        <Contact />
-      </main>
+  // Khi đổi trang: lên đầu trang, hoặc cuộn tới mục nếu link trỏ vào trang chủ (vd. #contact)
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (route.name === 'home' && hash.length > 1 && !hash.startsWith('#/')) {
+      const go = () =>
+        document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'instant' as ScrollBehavior });
+      go();
+      // Lần tải đầu: font và CSS có thể làm bố cục dịch chuyển, nên cuộn lại khi trang tải xong
+      if (document.readyState !== 'complete') {
+        window.addEventListener('load', go, { once: true });
+        return () => window.removeEventListener('load', go);
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+
+  return (
+    <div className="relative isolate min-h-screen font-sans text-ink">
+      <Background />
+      {route.name === 'home' ? (
+        <Home />
+      ) : (
+        // Trang blog: nền trơn để đọc cho thoải mái
+        <div className="min-h-screen bg-paper pt-16">
+          <Navbar />
+          {route.name === 'blog' ? <BlogList /> : <BlogPost slug={route.slug} />}
+          <div className="mx-auto max-w-3xl border-t border-line px-6 py-10 sm:px-10">
+            <Footer />
+          </div>
+        </div>
+      )}
       <AIChat />
-      <ScrollToTop />
-      <AudioPlayer />
-      <Footer />
     </div>
   );
 }

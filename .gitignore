@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# File cài đặt / file lớn, không đưa lên git
+*.exe

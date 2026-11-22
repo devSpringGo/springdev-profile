@@ -1,25 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, Loader2 } from 'lucide-react';
+import { MessageCircle, X, ArrowUp, Loader2 } from 'lucide-react';
 import { sendMessageToGemini } from '../services/geminiService';
 import { ChatMessage } from '../types';
 
 const AIChat: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'Xin chào! Tôi là DevBot. Bạn muốn hỏi gì về kinh nghiệm hay kỹ năng của Nguyễn Xuân Tiến?' }
+    { role: 'model', text: 'Chào bạn. Bạn có thể hỏi về kinh nghiệm, kỹ năng hoặc cách liên hệ với Tiến.' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const toggleChat = () => setIsOpen(!isOpen);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
 
   const handleSend = async () => {
@@ -40,24 +34,24 @@ const AIChat: React.FC = () => {
         }));
 
       const responseText = await sendMessageToGemini(userMsg.text, history);
-      
+
       if (responseText) {
         setMessages(prev => [...prev, { role: 'model', text: responseText }]);
       } else {
         throw new Error("No response text");
       }
     } catch (error) {
-      setMessages(prev => [...prev, { 
-        role: 'model', 
-        text: 'Xin lỗi, tôi đang gặp chút sự cố kết nối. Vui lòng thử lại sau.', 
-        isError: true 
+      setMessages(prev => [...prev, {
+        role: 'model',
+        text: 'Xin lỗi, hiện chưa kết nối được. Bạn có thể gửi email tới contact@springgo.xyz.',
+        isError: true
       }]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -66,39 +60,32 @@ const AIChat: React.FC = () => {
 
   return (
     <>
-      {/* Trigger Button */}
-      <button 
-        onClick={toggleChat}
-        className={`fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-2xl transition-all duration-300 hover:scale-110 flex items-center justify-center ${isOpen ? 'bg-red-500 rotate-90' : 'bg-gradient-to-r from-primary to-secondary animate-bounce-slow'}`}
+      <button
+        type="button"
+        onClick={() => setIsOpen(v => !v)}
+        aria-expanded={isOpen}
+        aria-label={isOpen ? 'Đóng trợ lý' : 'Mở trợ lý'}
+        className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full border border-accent/40 bg-surface/95 backdrop-blur px-4 py-2.5 text-sm font-medium text-ink shadow-lg shadow-black/10 hover:border-accent transition-colors"
       >
-        {isOpen ? <X size={24} color="white" /> : <MessageCircle size={28} color="white" />}
+        {isOpen ? <X size={16} aria-hidden="true" /> : <MessageCircle size={16} className="text-accent" aria-hidden="true" />}
+        <span>{isOpen ? 'Đóng' : 'Hỏi trợ lý'}</span>
       </button>
 
-      {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-24 right-6 w-[90vw] md:w-96 h-[500px] glass-panel rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden border border-slate-700 animate-fade-in-up">
-          {/* Header */}
-          <div className="bg-slate-800 p-4 border-b border-slate-700 flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center border border-primary/50">
-              <Bot size={20} className="text-primary" />
-            </div>
-            <div>
-              <h3 className="font-bold text-white text-sm">Trợ lý SpringGo</h3>
-              <p className="text-xs text-green-400 flex items-center gap-1">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span> Online
-              </p>
-            </div>
+        <div className="fixed bottom-20 right-5 z-50 flex h-[min(480px,calc(100vh-7rem))] w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl shadow-black/15">
+          <div className="border-b border-line px-4 py-3">
+            <h3 className="text-sm font-medium">Trợ lý hồ sơ</h3>
+            <p className="mt-0.5 text-xs text-muted">Trả lời tự động dựa trên hồ sơ của Tiến, có thể chưa chính xác.</p>
           </div>
 
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/80">
+          <div className="flex-1 space-y-3 overflow-y-auto bg-paper px-4 py-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div 
-                  className={`max-w-[80%] p-3 rounded-lg text-sm leading-relaxed ${
-                    msg.role === 'user' 
-                      ? 'bg-primary text-white rounded-br-none' 
-                      : 'bg-slate-700 text-gray-200 rounded-bl-none'
+                <div
+                  className={`max-w-[85%] whitespace-pre-wrap rounded-md px-3 py-2 text-sm leading-relaxed ${
+                    msg.role === 'user'
+                      ? 'bg-accent text-surface'
+                      : 'border border-line bg-surface text-ink'
                   }`}
                 >
                   {msg.text}
@@ -107,37 +94,36 @@ const AIChat: React.FC = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                 <div className="bg-slate-700 p-3 rounded-lg rounded-bl-none">
-                    <Loader2 size={16} className="animate-spin text-gray-400" />
-                 </div>
+                <div className="rounded-md border border-line bg-surface px-3 py-2">
+                  <Loader2 size={14} className="animate-spin text-muted" />
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
-          <div className="p-3 bg-slate-800 border-t border-slate-700">
+          <div className="border-t border-line p-3">
             <div className="relative flex items-center">
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Hỏi về kinh nghiệm của tôi..."
+                onKeyDown={handleKeyDown}
+                placeholder="Ví dụ: Tiến làm việc với SQL Server thế nào?"
                 disabled={isLoading}
-                className="w-full bg-slate-900 text-white pl-4 pr-12 py-3 rounded-xl border border-slate-600 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+                aria-label="Câu hỏi"
+                className="field pr-11"
               />
-              <button 
+              <button
+                type="button"
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
-                className="absolute right-2 p-2 text-primary hover:text-white hover:bg-primary/20 rounded-lg transition-colors disabled:opacity-50"
+                aria-label="Gửi"
+                className="absolute right-1.5 rounded-lg bg-accent p-1.5 text-surface disabled:opacity-30 transition-opacity"
               >
-                <Send size={18} />
+                <ArrowUp size={16} />
               </button>
             </div>
-            {/* <p className="text-[10px] text-gray-500 text-center mt-2">
-              Powered by Gemini AI. Bot có thể mắc lỗi.
-            </p> */}
           </div>
         </div>
       )}
