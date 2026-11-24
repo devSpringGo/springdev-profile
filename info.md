@@ -73,6 +73,7 @@ Màu tranh phong cảnh: các biến `--sky-*`, `--mtn-*`, `--sea-*` trong `inde
 | Nền trang | `data/profile.ts` → `ACTIVE_BACKGROUND` |
 | Bài blog | `content/blog/*.md` (hoặc dùng bot Telegram) |
 | Ảnh trong bài | `public/images/blog/` (bot tự đưa ảnh vào đây) |
+| Favicon (chữ T ghép từ lưới 3×3) | `public/favicon.svg` (bản gốc, tự đổi màu sáng / tối) + `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest`. Đổi hình thì phải xuất lại các file PNG / ICO |
 | Tiêu đề / mô tả trang khi chia sẻ link, tên blog | `lib/blog.ts` → `SITE` |
 | Thông tin trợ lý AI trên trang dùng để trả lời | `services/geminiService.ts` → `RESUME_CONTEXT` |
 | Màu sắc, font | `index.html` (biến CSS `--paper`, `--ink`, `--accent`...) |

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon springgo.xyz: chữ T ghép từ lưới ô 3×3. Ô 16, khe 8 để ở cỡ 16px mỗi ô đúng 4 điểm ảnh.
+       Màu theo chế độ sáng / tối của máy (giống màu nhấn của trang). -->
+  <style>
+    .on { fill: #1d4ed8 }
+    .off { fill: #d5e0f7 }
+    @media (prefers-color-scheme: dark) {
+      .on { fill: #78a4ff }
+      .off { fill: #2a3552 }
+    }
+  </style>
+  <rect class="on" x="0" y="0" width="16" height="16" rx="3.5"/>
+  <rect class="on" x="24" y="0" width="16" height="16" rx="3.5"/>
+  <rect class="on" x="48" y="0" width="16" height="16" rx="3.5"/>
+  <rect class="off" x="0" y="24" width="16" height="16" rx="3.5"/>
+  <rect class="on" x="24" y="24" width="16" height="16" rx="3.5"/>
+  <rect class="off" x="48" y="24" width="16" height="16" rx="3.5"/>
+  <rect class="off" x="0" y="48" width="16" height="16" rx="3.5"/>
+  <rect class="on" x="24" y="48" width="16" height="16" rx="3.5"/>
+  <rect class="off" x="48" y="48" width="16" height="16" rx="3.5"/>
+</svg>
