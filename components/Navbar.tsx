@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Code2, Menu, X } from 'lucide-react';
-import { ThemeToggle } from './ui';
+import { CONTAINER, ThemeToggle } from './ui';
 
 const links = [
   { href: '/#about', label: 'Về mình' },
@@ -29,7 +29,7 @@ const Navbar: React.FC<{ overlay?: boolean }> = ({ overlay = false }) => {
         solid ? 'border-b border-line bg-paper/85 backdrop-blur-md' : 'border-b border-transparent'
       }`}
     >
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 sm:px-10">
+      <nav className={`${CONTAINER} flex h-16 items-center justify-between`}>
         <a href="/" className="group flex items-center gap-2" aria-label="DEVSPRING – về trang chủ">
           <Code2
             size={26}
@@ -72,7 +72,7 @@ const Navbar: React.FC<{ overlay?: boolean }> = ({ overlay = false }) => {
       </nav>
 
       {open && (
-        <ul className="mx-auto max-w-6xl space-y-1 px-6 pb-4 sm:px-10 md:hidden">
+        <ul className={`${CONTAINER} space-y-1 pb-4 md:hidden`}>
           {[...links, { href: '/#contact', label: 'Liên hệ' }].map((l) => (
             <li key={l.href}>
               <a href={l.href} onClick={() => setOpen(false)} className="block rounded-xl px-3 py-2.5 text-ink/80 hover:bg-raised">

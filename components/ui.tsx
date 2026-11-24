@@ -44,10 +44,17 @@ type SectionProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Khung chiều rộng chung của trang chủ (menu, màn hình mở đầu, các mục, chân trang).
+ * Rộng dần theo màn hình: 1152px → 1280px (màn ≥ 1280px) → 1440px (màn ≥ 1536px).
+ * Muốn rộng / hẹp hơn: sửa ở đây.
+ */
+export const CONTAINER = 'mx-auto w-full max-w-6xl px-6 sm:px-10 xl:max-w-7xl 2xl:max-w-[90rem] 2xl:px-14';
+
 /** Một mục toàn chiều rộng ở trang chủ. */
 export const Section: React.FC<SectionProps> = ({ id, eyebrow, title, intro, action, children }) => (
   <section id={id} className="scroll-mt-16 py-20 md:py-24">
-    <div className="mx-auto max-w-6xl px-6 sm:px-10">
+    <div className={CONTAINER}>
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-accent">{eyebrow}</p>

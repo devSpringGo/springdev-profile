@@ -29,7 +29,7 @@ const About: React.FC = () => {
       <div className="grid gap-4 lg:grid-cols-3">
         {/* Câu chuyện */}
         <Tile className="flex flex-col justify-between gap-8 lg:col-span-2 lg:row-span-2">
-          <div className="space-y-4 text-[1.0625rem] leading-relaxed text-muted">
+          <div className="max-w-[68ch] space-y-4 text-[1.0625rem] leading-relaxed text-muted">
             <p>
               Mình là Tiến, lập trình viên ở Đà Nẵng. Hơn hai năm nay, phần lớn những gì mình làm là{' '}
               <span className={strong}>phần mềm nội bộ cho doanh nghiệp</span>: quản lý hợp đồng, nghiệp vụ kế

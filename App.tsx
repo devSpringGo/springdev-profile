@@ -12,6 +12,7 @@ import BlogList from './components/blog/BlogList';
 import BlogPost from './components/blog/BlogPost';
 import AIChat from './components/AIChat';
 import Background from './components/Background';
+import { CONTAINER } from './components/ui';
 
 /** Trang chủ: màn hình mở đầu trên nền phong cảnh, nội dung nằm trên một lớp nền trượt lên. */
 const Home: React.FC = () => (
@@ -24,7 +25,7 @@ const Home: React.FC = () => (
       <Experience />
       <BlogPreview />
       <Contact />
-      <div className="mx-auto max-w-6xl border-t border-line px-6 py-10 sm:px-10">
+      <div className={`${CONTAINER} border-t border-line py-10`}>
         <Footer />
       </div>
     </main>

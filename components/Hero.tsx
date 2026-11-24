@@ -2,12 +2,13 @@ import React from 'react';
 import { ArrowDown, ArrowRight } from 'lucide-react';
 import { SectionId } from '../types';
 import { PROFILE } from '../data/profile';
+import { CONTAINER } from './ui';
 
 /** Màn hình mở đầu toàn chiều rộng, nằm trên tranh phong cảnh nền. */
 const Hero: React.FC = () => {
   return (
     <section id="home" className="on-photo relative flex min-h-[92vh] items-center">
-      <div className="mx-auto w-full max-w-6xl px-6 pb-36 pt-32 sm:px-10">
+      <div className={`${CONTAINER} pb-36 pt-32`}>
         <div className="flex items-center gap-3">
           <img
             src={PROFILE.avatar}
