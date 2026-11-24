@@ -130,7 +130,7 @@ const BlogPost: React.FC<{ slug: string }> = ({ slug }) => {
   const [tocOpen, setTocOpen] = useState(false);
 
   usePageMeta(
-    post ? `${post.title} — ${PROFILE.name}` : null,
+    post ? `${post.title} — ${SITE.brand}` : null,
     post?.excerpt || SITE.description,
     SITE.url + postPath(slug)
   );

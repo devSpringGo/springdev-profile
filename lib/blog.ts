@@ -8,9 +8,11 @@ export const SITE = {
   url: 'https://springgo.xyz',
   name: 'springgo.xyz',
   author: 'Nguyễn Xuân Tiến',
-  title: 'Nguyễn Xuân Tiến — Full-stack Developer',
+  /** Tên hiển thị trên tab trình duyệt (trang chủ; các trang khác có dạng "<tiêu đề> — SpringGo") */
+  brand: 'SpringGo',
+  title: 'SpringGo',
   description: 'Nguyễn Xuân Tiến, Full-stack Developer (.NET, SQL Server) tại Đà Nẵng. Hồ sơ, dự án và blog kỹ thuật.',
-  blogTitle: 'Bài viết — Nguyễn Xuân Tiến',
+  blogTitle: 'Bài viết — SpringGo',
   blogDescription: 'Nơi mình ghi lại chuyện .NET, SQL Server và những điều học được khi làm phần mềm cho doanh nghiệp.',
   /** Ảnh mặc định khi chia sẻ link (bài không có ảnh nào) */
   image: 'https://res.cloudinary.com/dgejmagns/image/upload/0d323034-c750-479a-91f0-bdde8fae45f1.png',

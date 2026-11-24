@@ -104,7 +104,7 @@ const postHead = (p: Post, image: string | null) => {
   const url = SITE.url + postPath(p.slug);
   const description = p.excerpt || SITE.blogDescription;
   return headTags({
-    title: `${p.title} — ${SITE.author}`,
+    title: `${p.title} — ${SITE.brand}`,
     description,
     url,
     type: 'article',
