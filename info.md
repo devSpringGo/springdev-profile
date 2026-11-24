@@ -35,7 +35,7 @@ Cập nhật: 22/11/2026.
    - **Dự án**: 1 thẻ lớn + 4 thẻ, mỗi thẻ có hình minh hoạ vẽ bằng code.
    - **Hành trình**: 4 chặng nằm ngang từ 2019 đến nay, chi tiết công việc thu gọn.
    - **Blog**: 3 bài mới nhất.
-   - **Liên hệ**: email, điện thoại, form (mở ứng dụng mail của người gửi).
+   - **Liên hệ**: email, điện thoại, form gửi lời nhắn về Telegram của anh (xem mục 5b).
 
 ### Nền trang
 Chọn ở `ACTIVE_BACKGROUND` trong `data/profile.ts`:
@@ -167,6 +167,39 @@ npx wrangler secret put GITHUB_TOKEN   # thay token (ví dụ khi hết hạn)
 Sau khi đổi danh sách lệnh của bot, mở lại `https://springgo-blog-bot.xuantien8a2.workers.dev/setup?secret=<TELEGRAM_WEBHOOK_SECRET>`.
 
 Đổi giọng văn / độ dài bài: sửa `telegram-bot/src/prompt.ts` rồi `npm run deploy`.
+
+---
+
+## 5b. Form liên hệ → Telegram
+
+```
+Người xem điền form ──► POST /api/contact (Cloudflare Pages Function, functions/api/contact.ts)
+                              │  kiểm tra dữ liệu, ô bẫy bot, Turnstile (nếu bật)
+                              └─► bot @springgo_blog_bot nhắn lời nhắn vào Telegram của anh
+```
+
+- Code: `functions/api/contact.ts` (phía máy chủ), `components/Contact.tsx` (form), `lib/contact.ts` (quy tắc dùng chung).
+  Thư mục `functions/` được Cloudflare Pages tự deploy cùng trang, không cần Worker riêng.
+- Form chỉ báo "Đã gửi" khi máy chủ nhận thật; lỗi thì giữ nguyên nội dung và gợi ý gửi email trực tiếp.
+- Chống spam: ô bẫy ẩn (luôn bật) + Cloudflare Turnstile (bật khi có khoá, xem dưới).
+- Trả lời người gửi: bấm vào địa chỉ email trong tin Telegram.
+
+### Cấu hình (Cloudflare Dashboard → Workers & Pages → springdev-profile → Settings → Variables and Secrets)
+
+| Biến | Loại | Giá trị |
+|---|---|---|
+| `TELEGRAM_BOT_TOKEN` | Secret | Token của bot (giống bot viết blog) |
+| `TELEGRAM_CHAT_ID` | Text | `5642891542` |
+| `TURNSTILE_SECRET_KEY` | Secret | (không bắt buộc) Secret key của Turnstile |
+| `VITE_TURNSTILE_SITE_KEY` | Text | (không bắt buộc) Site key của Turnstile, dùng lúc build |
+
+Thêm / đổi biến xong phải **deploy lại** (Deployments → Retry deployment, hoặc push commit mới).
+
+Bật Turnstile: Cloudflare Dashboard → Turnstile → Add widget → tên `springgo`, tên miền `springgo.xyz` và `www.springgo.xyz`,
+Widget mode **Managed** → lấy Site key và Secret key điền vào 2 biến trên.
+
+Thiếu `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` thì form báo "chưa được cấu hình" kèm địa chỉ email để người xem gửi trực tiếp.
+Khi chạy `npm run dev` form cũng báo lỗi như vậy (máy chủ Vite không chạy `functions/`), đó là bình thường.
 
 ---
 
