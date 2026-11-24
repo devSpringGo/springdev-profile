@@ -67,7 +67,7 @@ export const PROFILE = {
   role: 'Full-stack Developer',
   tagline:
     'Mình làm phần mềm cho doanh nghiệp: những hệ thống mà nhân viên mở ra mỗi sáng để làm việc. Thích dữ liệu gọn gàng, truy vấn chạy nhanh và giao diện không bắt ai phải nghĩ nhiều.',
-  status: 'Đang làm phần mềm nội bộ ở Công ty Bánh Đồng Tiến',
+  status: 'Đang tìm việc Freelancer',
   avatar: 'https://res.cloudinary.com/dgejmagns/image/upload/0d323034-c750-479a-91f0-bdde8fae45f1.png',
   email: 'contact@springgo.xyz',
   phone: '034 609 2267',
